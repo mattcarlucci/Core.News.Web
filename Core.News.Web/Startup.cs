@@ -24,7 +24,7 @@ namespace Core.News.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            var connection = @"Server=(localdb)\mssqllocaldb;Database=News;Trusted_Connection=True;ConnectRetryCount=0";
+            var connection = @"Server=.\SQLEXPRESS;Database=News;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<NewsDb>(options => options.UseSqlServer(connection));
         }
 

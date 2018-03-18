@@ -5,6 +5,16 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.News.Web", "Core.News.Web\Core.News.Web.csproj", "{85B28B21-D68C-4F91-A066-A9143C0F4F77}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crypto.Compare", "Crypto.Compare\Crypto.Compare.csproj", "{61F01308-A799-4D67-8A0A-F4E7136F5926}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.News", "Core.News\Core.News.csproj", "{DA091213-DA08-4097-AB02-35355B46088E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.News.Console", "Core.News.Console\Core.News.Console.csproj", "{9A3F9553-E3B3-471C-9F8A-832169A36344}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crypto.Compare.Tests", "Crypto.Compare.Tests\Crypto.Compare.Tests.csproj", "{12550597-8DEE-447C-BC45-0CC8414BD0D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "News.Core.SqlServer", "News.Core.SqlServer\News.Core.SqlServer.csproj", "{6287C73B-BB85-4176-BA6D-5CD7A7EB0EFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +25,26 @@ Global
 		{85B28B21-D68C-4F91-A066-A9143C0F4F77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85B28B21-D68C-4F91-A066-A9143C0F4F77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85B28B21-D68C-4F91-A066-A9143C0F4F77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61F01308-A799-4D67-8A0A-F4E7136F5926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61F01308-A799-4D67-8A0A-F4E7136F5926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61F01308-A799-4D67-8A0A-F4E7136F5926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61F01308-A799-4D67-8A0A-F4E7136F5926}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA091213-DA08-4097-AB02-35355B46088E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA091213-DA08-4097-AB02-35355B46088E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA091213-DA08-4097-AB02-35355B46088E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA091213-DA08-4097-AB02-35355B46088E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A3F9553-E3B3-471C-9F8A-832169A36344}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A3F9553-E3B3-471C-9F8A-832169A36344}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A3F9553-E3B3-471C-9F8A-832169A36344}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A3F9553-E3B3-471C-9F8A-832169A36344}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12550597-8DEE-447C-BC45-0CC8414BD0D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12550597-8DEE-447C-BC45-0CC8414BD0D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12550597-8DEE-447C-BC45-0CC8414BD0D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12550597-8DEE-447C-BC45-0CC8414BD0D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6287C73B-BB85-4176-BA6D-5CD7A7EB0EFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6287C73B-BB85-4176-BA6D-5CD7A7EB0EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6287C73B-BB85-4176-BA6D-5CD7A7EB0EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6287C73B-BB85-4176-BA6D-5CD7A7EB0EFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
