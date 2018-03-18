@@ -5,10 +5,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Mail\EmailMessage.cs" />
+    <Compile Remove="Services\Cron\**" />
+    <EmbeddedResource Remove="Services\Cron\**" />
+    <None Remove="Services\Cron\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Mail\EmailMessage.cs" />
+    <Compile Remove="Services\HostedService.cs" />
+    <Compile Remove="Services\QuoteOfTheDayTask.cs" />
+    <Compile Remove="Services\SchedulerExtensions.cs" />
+    <Compile Remove="Services\SchedulerHostedServiceScope.cs" />
+    <Compile Remove="Services\Scheduling\SchedulerTaskWrapper.cs" />
+    <Compile Remove="Services\SomeOtherTask.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Chroniton.NetCore" Version="1.0.3.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.1" />
+    <PackageReference Include="ncrontab" Version="3.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
   </ItemGroup>
 

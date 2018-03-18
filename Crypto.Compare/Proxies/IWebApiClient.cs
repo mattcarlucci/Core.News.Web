@@ -1,4 +1,6 @@
-﻿namespace Crypto.Compare.Proxies
+﻿using System;
+
+namespace Crypto.Compare.Proxies
 {
     public interface IWebApiClient
     {

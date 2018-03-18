@@ -1,4 +1,4 @@
-﻿using Core.News.Mail;
+﻿using Core.News.Services;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -11,12 +11,17 @@ namespace Core.News.Configs
     /// </summary>
     public class NewsConfiguration
     {
-        const string file = ".\\crypto.config.json";
+        const string file = ".\\news.config.json";
         /// <summary>
         /// Gets or sets the interval.
         /// </summary>
         /// <value>The interval.</value>
         public int Interval { get; set; }
+        /// <summary>
+        /// Gets or sets the interval start.
+        /// </summary>
+        /// <value>The interval start.</value>
+        public string IntervalStart { get; set; }
         /// <summary>
         /// Gets or sets a value indicating whether [save stories].
         /// </summary>
@@ -38,14 +43,14 @@ namespace Core.News.Configs
         /// </summary>
         public NewsConfiguration()
         {
-            this.Interval = 1000 * 60 * 60 * 24;
-            Database = "Crypto.News.CIK_Lite";
+            this.Interval = 720;
+            Database = "News.Core.SqlServer.Models.DbNewsContext";
         }
 
         /// <summary>
         /// Loads this instance.
         /// </summary>
-        /// <returns>CryptoConfig.</returns>
+        /// <returns></returns>       
         public static NewsConfiguration Load()
         {
             if (File.Exists(file) == false) return null;

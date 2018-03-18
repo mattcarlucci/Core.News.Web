@@ -11,7 +11,7 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-namespace Core.News.Mail
+namespace Core.News.Services
 {
     /// <summary>
     /// Interface IEmailConfiguration
@@ -43,6 +43,6 @@ namespace Core.News.Mail
         /// Gets or sets the user configuration.
         /// </summary>
         /// <value>The user configuration.</value>
-        UserConfiguration UserConfiguration { get; set; }
+        UserConfiguration User { get; set; }
     }
 }

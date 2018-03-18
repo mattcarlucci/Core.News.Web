@@ -56,7 +56,7 @@ namespace Core.News.ViewModels
         /// <returns>System.String.</returns>
         public string MailMessage()
         {
-            string token = "<hr width =\"100%\"><br>";
+            //string token = "<hr width =\"100%\"><br>";
             return this + string.Join("<br>", Stories) +  GetImageUrls();
         }
         public string GetImageUrls()

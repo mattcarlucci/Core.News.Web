@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using Crypto.Compare.Models;
 using System.Threading;
 using Core.News.Configs;
-using Core.News.Mail;
+using Core.News.Services;
 
 namespace Core.News
 {
@@ -33,8 +33,7 @@ namespace Core.News
     /// <seealso cref="Crypto.Compare.Proxies.WebApiClient" />
     /// <seealso cref="Core.News.IWebClientService" />
     public class WebClientService : WebApiClient, IWebClientService
-    {
-        
+    {        
         /// <summary>
         /// The logger
         /// </summary>
@@ -57,6 +56,8 @@ namespace Core.News
         /// </summary>
         private readonly IEmailService emailService;
 
+        public string Schedule => throw new NotImplementedException();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WebClientService"/> class.
         /// </summary>
@@ -66,27 +67,36 @@ namespace Core.News
             INewsRepository newsRepository, NewsConfiguration newsConfiguration, IEmailService emailService)
         {
             this.configuration = configuration;           
-            logger = loggerFactory.CreateLogger<WebClientService>();
+            this.logger = loggerFactory.CreateLogger<WebClientService>();
             this.newsRepository = newsRepository;
             this.newsConfiguration = newsConfiguration;
             this.emailService = emailService;
         }
-
+        
         /// <summary>
         /// Starts this instance.
         /// </summary>
         /// <returns>Task.</returns>
-        public async Task Start()
-        {           
-            Task task = Task.Factory.StartNew(() =>
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            while (cancellationToken.IsCancellationRequested == false)
+            {
+                DateTime start = DateTime.Parse(this.newsConfiguration.IntervalStart);
+                TimeSpan span = new TimeSpan(start.Ticks - DateTime.Now.Ticks);
+                logger.LogInformation("Waiting {0} to begin", span.Duration());
+                if (span.TotalMilliseconds <= 0) break;
+                Thread.Sleep(10000);
+            }
+
+            StartDate = newsRepository.GetLastContentDate().ToUnixTime();
+            Task  task = Task.Factory.StartNew(() =>
             {
                 while (true)
                 {
                     RequestLatestNews();                   
-                    Thread.Sleep(int.Parse(configuration["Interval"]));
+                    Thread.Sleep(newsConfiguration.Interval * 1000 * 60);
                 }
-            });
-            task.Wait();
+            });         
             await task;
         }
        
@@ -116,7 +126,9 @@ namespace Core.News
         protected override void OnNewsSummaryComplete(object sender, NewsCompleteEventArgs e)
         {
             logger.LogInformation("Summary Complete {0} stories", e.Stories.Count());
-            var model = Map.MapStoryView(e.Stories);
+            var model = Map.StoryView(e.Stories);
+            if (e.Stories.Count == 0) return;
+
             emailService.Send("Crypto News Alert", model.MailMessage());
         }
         /// <summary>
@@ -127,7 +139,9 @@ namespace Core.News
         protected override void OnNewsComplete(object sender, NewsCompleteEventArgs e)
         {
             logger.LogInformation("Complete");
-            logger.LogInformation("Next Scan: {0}", DateTime.Now.AddMilliseconds(int.Parse(configuration["Interval"])));
+
+            logger.LogInformation("Next Scan: {0:MM/dd/yyyy hh:mm tt}", DateTime.Now.
+                AddMinutes(newsConfiguration.Interval));
         }
         /// <summary>
         /// Handles the <see cref="E:NewsDetailEventComplete" /> event.
@@ -148,11 +162,9 @@ namespace Core.News
             //newsRepository.AddUpdateCategory(e.)
             logger.LogInformation("Read Details {0} bytes", e.Story.UrlData.Count());
 
-            var category = newsRepository.AddUpdateCategory(Map.MapProvider(e.Story.Provider));
-            var content = newsRepository.AddUpdateStory(category, Map.MapStory(e.Story));
-            newsRepository.AddUpdateItem(Map.MapItem(category, content));
-        }
-       
+            var category = newsRepository.AddUpdateCategory(Map.Provider(e.Story.Provider));
+            var content = newsRepository.AddUpdateStory(category, Map.Story(e.Story));
+            newsRepository.AddUpdateItem(Map.Item(category, content));
+        }        
     }
-
 }

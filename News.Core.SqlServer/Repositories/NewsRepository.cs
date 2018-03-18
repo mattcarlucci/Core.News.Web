@@ -10,7 +10,7 @@ namespace News.Core.SqlServer
 {
     public class NewsRepository : INewsRepository
     {
-        NewsDbContext db;
+        INewsDbContext db;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NewsRepository"/> class.
@@ -20,13 +20,7 @@ namespace News.Core.SqlServer
         {
             this.db = db;
         }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NewsRepository"/> class.
-        /// </summary>
-        public NewsRepository()
-        {
-
-        }
+      
         /// <summary>
         /// Gets the last content date.
         /// </summary>

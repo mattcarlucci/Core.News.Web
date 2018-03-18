@@ -1,12 +1,28 @@
-﻿using System;
+﻿// ***********************************************************************
+// Assembly         : Core.News
+// Author           : mcarlucci
+// Created          : 03-17-2018
+//
+// Last Modified By : mcarlucci
+// Last Modified On : 03-17-2018
+// ***********************************************************************
+// <copyright file="Item.cs" company="Core.News">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Core.News.Web.Entities
 {
+    /// <summary>
+    /// Class Item.
+    /// </summary>
     public class Item
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Item"/> class.
+        /// Initializes a new instance of the <see cref="Item" /> class.
         /// </summary>
         /// <param name="category">The category.</param>
         /// <param name="content">The content.</param>
@@ -16,7 +32,7 @@ namespace Core.News.Web.Entities
             this.ItemContent = content;
         }
         /// <summary>
-        /// Initializes a new instance of the <see cref="Item"/> class.
+        /// Initializes a new instance of the <see cref="Item" /> class.
         /// </summary>
         public Item() { }
         /// <summary>

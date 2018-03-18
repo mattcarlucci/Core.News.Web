@@ -24,7 +24,7 @@ namespace News.Core.SqlServer.Models
     /// Class NewsDbContext.
     /// </summary>
     /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
-    public class NewsDbContext : DbContext
+    public class NewsDbContext : DbContext, INewsDbContext
     {
         /// <summary>
         /// Gets or sets the categories.

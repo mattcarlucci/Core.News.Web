@@ -47,7 +47,7 @@ namespace Crypto.Compare.Proxies
         /// Gets or sets the start date.
         /// </summary>
         /// <value>The start date.</value>
-        private int StartDate { get; set; }
+        protected int StartDate { get; set; }
        
         /// <summary>
         /// Initializes a new instance of the <see cref="WebApiClient"/> class.
@@ -90,7 +90,7 @@ namespace Crypto.Compare.Proxies
             OnNewsStart(this, StopWatchEventArgs.Create(watch));
 
             var filter = DateTime.Now.AddDays(-1).ToUnixTime();
-            filter = StartDate; // for debugging
+            filter = StartDate;  // for debugging
             using (WebClient web = new WebClient())
             {
                 stories = GetStories(web, w => int.Parse(w.publishedOn) > filter);

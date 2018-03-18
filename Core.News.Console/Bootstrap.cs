@@ -12,6 +12,7 @@
 // <summary></summary>
 // ***********************************************************************
 using AutoMapper;
+using Core.News.Services;
 using Core.News.ViewModels;
 using Core.News.Web.Entities;
 using Crypto.Compare.Extensions;
@@ -45,9 +46,16 @@ namespace Core.News
 
             serviceProvider
                 .GetService<ILoggerFactory>().AddConsole(LogLevel.Debug);
-            var service = serviceProvider.GetService<IWebClientService>();
 
-            service.Start();
+            var service = serviceProvider.GetService<IHostedService>();
+            service.StartAsync(new System.Threading.CancellationToken());
+
+            var q = serviceProvider.GetService<IWebClientService>();
+            q.StartAsync(new System.Threading.CancellationToken());
+               
+          //  q.Start();
+           
+            Console.ReadLine();
         }
     }
 
@@ -108,7 +116,7 @@ namespace Core.News
         /// </summary>
         /// <param name="publication">The publication.</param>
         /// <returns>StoryViewModel.</returns>
-        public static StoryViewModel MapStoryView(Publication publication)
+        public static StoryViewModel StoryView(Publication publication)
         {
             return AutoMapper.Mapper.Map<ViewModels.StoryViewModel>(publication);
         }
@@ -118,7 +126,7 @@ namespace Core.News
         /// </summary>
         /// <param name="publications">The publications.</param>
         /// <returns>List&lt;StoryViewModel&gt;.</returns>
-        public static StoryViewModels MapStoryView(List<Publication> publications)
+        public static StoryViewModels StoryView(List<Publication> publications)
         {
             IMapper mapper = AutoMapper.Mapper.Instance;
             var stories = mapper.Map<List<ViewModels.StoryViewModel>>(publications);
@@ -131,7 +139,7 @@ namespace Core.News
         /// </summary>
         /// <param name="stories">The stories.</param>
         /// <returns>List&lt;ItemContent&gt;.</returns>
-        public static List<ItemContent> MapStories(List<Publication> stories)
+        public static List<ItemContent> Stories(List<Publication> stories)
         {
             IMapper mapper = AutoMapper.Mapper.Instance;
             return mapper.Map<List<ItemContent>>(stories);
@@ -141,7 +149,7 @@ namespace Core.News
         /// </summary>
         /// <param name="story">The story.</param>
         /// <returns>ItemContent.</returns>
-        public static ItemContent MapStory(Publication story)
+        public static ItemContent Story(Publication story)
         {
             return AutoMapper.Mapper.Map<ItemContent>(story);
         }
@@ -150,7 +158,7 @@ namespace Core.News
         /// Maps the provider.
         /// </summary>
         /// <param name="provider">The provider.</param>
-        public static Category MapProvider(Provider provider)
+        public static Category Provider(Provider provider)
         {
             return AutoMapper.Mapper.Map<Category>(provider);
         }
@@ -160,7 +168,7 @@ namespace Core.News
         /// </summary>
         /// <param name="providers">The providers.</param>
         /// <returns>List&lt;Category&gt;.</returns>
-        public static List<Category> MapProviders(List<Provider> providers)
+        public static List<Category> Providers(List<Provider> providers)
         {
             IMapper mapper = AutoMapper.Mapper.Instance;
             return mapper.Map<List<Category>>(providers);
@@ -172,7 +180,7 @@ namespace Core.News
         /// <param name="category">The category.</param>
         /// <param name="content">The content.</param>
         /// <returns>Item.</returns>
-        public static Item MapItem(Category category, ItemContent content)
+        public static Item Item(Category category, ItemContent content)
         {
             var item = new Item(category, content);
             return AutoMapper.Mapper.Map<Item>(item).Reset();

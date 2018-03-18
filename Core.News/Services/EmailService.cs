@@ -12,15 +12,14 @@
 // <summary></summary>
 // ***********************************************************************
 
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
 using System.Linq;
-using static Core.News.Mail.EmailService;
+using static Core.News.Services.EmailService;
 using Microsoft.Extensions.Logging;
 
-namespace Core.News.Mail
+namespace Core.News.Services
 {
     /// <summary>
     /// Class EmailService.
@@ -28,12 +27,17 @@ namespace Core.News.Mail
     /// <seealso cref="Crypto.Compare.Configs.IEmailService" />
     public class EmailService : IEmailService
     {
-        private readonly ILogger<EmailService> _logger;
-
+        /// <summary>
+        /// The logger
+        /// </summary>
+        private readonly ILogger<EmailService> logger;
         /// <summary>
         /// The email configuration
         /// </summary>
-        private readonly IEmailConfiguration _emailConfiguration;
+        private readonly IEmailConfiguration settings;
+        /// <summary>
+        /// The client
+        /// </summary>
         private readonly SmtpClient client;
 
         /// <summary>
@@ -42,15 +46,16 @@ namespace Core.News.Mail
         /// <param name="emailConfiguration">The email configuration.</param>
         public EmailService(IEmailConfiguration emailConfiguration, ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger<EmailService>();
-            _emailConfiguration = emailConfiguration;
+            logger = loggerFactory.CreateLogger<EmailService>();
+            settings = emailConfiguration;
 
-            client = new SmtpClient(_emailConfiguration.Smtp.Host, _emailConfiguration.Smtp.Port)
+            client = new SmtpClient(settings.Smtp.Host, settings.Smtp.Port)
             {
-                Credentials = new NetworkCredential(_emailConfiguration.Smtp.UserName, _emailConfiguration.Smtp.Password),
+                Credentials = new NetworkCredential(settings.Smtp.UserName, settings.Smtp.Password),
                 DeliveryMethod = SmtpDeliveryMethod.Network,
-                EnableSsl = _emailConfiguration.UseSsl
-            };
+               EnableSsl = settings.UseSsl
+            //    UseDefaultCredentials = true
+        };
         }
         
         /// <summary>
@@ -60,36 +65,27 @@ namespace Core.News.Mail
         /// <param name="body">The body.</param>
         /// <exception cref="NotImplementedException"></exception>
         public void Send(string subject, string body)
-        {
-            var cfg = _emailConfiguration;
+        {            
+            if (settings.Enabled == false || settings.User.To.Count() == 0) return;
 
-            if (cfg.Enabled == false || cfg.UserConfiguration.To.Count() == 0) return;
-
-            MailMessage mail = new MailMessage
+            MailMessage mailMessage = new MailMessage
             {
-                From = new MailAddress(cfg.UserConfiguration.From.Address, cfg.UserConfiguration.From.Name),
+                From = new MailAddress(settings.User.From.Address, settings.User.From.Name),
                 SubjectEncoding = System.Text.Encoding.UTF8,
                 IsBodyHtml = true,
                 Subject = subject,
                 Body = body
             };
+           
 
-            foreach (var user in cfg.UserConfiguration.To.Where(w => w.Enabled))
-            {
-                mail.To.Add(user.Address);
-            }
-            foreach (var user in cfg.UserConfiguration.Cc.Where(w => w.Enabled))
-            {
-                mail.CC.Add(user.Address);
-            }
-            foreach (var user in cfg.UserConfiguration.Bcc.Where(w => w.Enabled))
-            {
-                mail.Bcc.Add(user.Address);
-            }
+            mailMessage.To.AddRange(settings.User.To.Where(w => w.Enabled));
+            mailMessage.CC.AddRange(settings.User.Cc.Where(w => w.Enabled));
+            mailMessage.Bcc.AddRange(settings.User.Bcc.Where(w => w.Enabled));
+            
 
-            _logger.LogInformation("Sending email...");
-            client.Send(mail);
-            _logger.LogInformation("Success");
+            logger.LogInformation("Sending email...");
+            client.Send(mailMessage);
+            logger.LogInformation("Success");
         }
     }
 }

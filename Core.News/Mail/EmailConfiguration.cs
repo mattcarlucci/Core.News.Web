@@ -11,7 +11,7 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-namespace Core.News.Mail
+namespace Core.News.Services
 {
     
     /// <summary>
@@ -48,14 +48,14 @@ namespace Core.News.Mail
         /// Gets or sets the user configuration.
         /// </summary>
         /// <value>The user configuration.</value>
-        public UserConfiguration UserConfiguration { get; set; }
+        public UserConfiguration User { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailConfiguration"/> class.
         /// </summary>
         public EmailConfiguration()
         {
-            UserConfiguration = new UserConfiguration();
+            User = new UserConfiguration();
             Smtp = new HostConfiguration();
             Pop = new HostConfiguration();
         }

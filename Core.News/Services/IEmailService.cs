@@ -13,7 +13,7 @@
 // ***********************************************************************
 using System.Collections.Generic;
 
-namespace Core.News.Mail
+namespace Core.News.Services
 {
     /// <summary>
     /// Interface IEmailService

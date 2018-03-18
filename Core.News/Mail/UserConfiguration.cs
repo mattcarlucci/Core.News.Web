@@ -4,9 +4,9 @@
 // Created          : 03-17-2018
 //
 // Last Modified By : mcarlucci
-// Last Modified On : 03-17-2018
+// Last Modified On : 03-18-2018
 // ***********************************************************************
-// <copyright file="EmailConfig.cs" company="Core.News">
+// <copyright file="UserConfiguration.cs" company="Core.News">
 //     Copyright (c) . All rights reserved.
 // </copyright>
 // <summary></summary>
@@ -15,13 +15,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.News.Mail
+namespace Core.News.Services
 {
     /// <summary>
     /// Class EmailUserConfiguration.
     /// </summary>
     public class UserConfiguration
-    {          
+    {
         /// <summary>
         /// Gets or sets from.
         /// </summary>

@@ -1,0 +1,49 @@
+{
+  "Interval": 720,
+  "IntervalStart": "8:00:00 AM",
+  "SaveStories": true,
+  "Database": "News.Core.SqlServer.Models.NewsDbContext",
+  "EmailConfiguration": {
+    "Smtp": {
+      "Host": "",
+      "UserName": "",
+      "Password": "",
+      "Port": 26
+    },
+    "Pop": {
+      "Host": null,
+      "UserName": null,
+      "Password": null,
+      "Port": 0
+    },
+    "Enabled": false,
+    "UseSsl": false,
+    "User": {
+      "From": {
+        "Name": "matt.carlucci@coinaxess.com",
+        "Address": "matt.carlucci@coinaxess.com",
+        "Enabled": true
+      },
+      "To": [
+        {
+          "Name": "",
+          "Address": "",
+          "Enabled": true
+        },
+        {
+          "Name": "",
+          "Address": "",
+          "Enabled": false
+        }
+      ],
+      "Cc": [
+        {
+          "Name": "",
+          "Address": "",
+          "Enabled": false
+        }
+      ],
+      "Bcc": []
+    }
+  }
+}

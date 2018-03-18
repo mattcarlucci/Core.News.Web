@@ -12,7 +12,7 @@
 // <summary></summary>
 // ***********************************************************************
 using Core.News.Configs;
-using Core.News.Mail;
+using Core.News.Services;
 using Crypto.Compare;
 using Crypto.Compare.Proxies;
 using Microsoft.Extensions.DependencyInjection;

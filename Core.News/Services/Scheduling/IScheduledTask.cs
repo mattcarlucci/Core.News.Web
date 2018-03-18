@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 // Assembly         : Core.News
 // Author           : mcarlucci
-// Created          : 03-17-2018
+// Created          : 03-18-2018
 //
 // Last Modified By : mcarlucci
 // Last Modified On : 03-18-2018
 // ***********************************************************************
-// <copyright file="IWebClientService.cs" company="Core.News">
+// <copyright file="IScheduledTask.cs" company="Core.News">
 //     Copyright (c) . All rights reserved.
 // </copyright>
 // <summary></summary>
@@ -14,20 +14,24 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Core.News
+
+namespace Core.News.Services
 {
     /// <summary>
-    /// Interface IWebClientService
+    /// Interface IScheduledTask
     /// </summary>
-    public interface IWebClientService 
+    public interface IScheduledTask
     {
-        //  Task Start();
         /// <summary>
-        /// Starts the asynchronous.
+        /// Gets the schedule.
+        /// </summary>
+        /// <value>The schedule.</value>
+        string Schedule { get; }
+        /// <summary>
+        /// Executes the asynchronous.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        Task StartAsync(CancellationToken cancellationToken);
+        Task ExecuteAsync(CancellationToken cancellationToken);
     }
-
 }

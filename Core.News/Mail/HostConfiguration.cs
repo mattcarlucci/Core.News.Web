@@ -12,7 +12,7 @@
 // <summary></summary>
 // ***********************************************************************
 
-namespace Core.News.Mail
+namespace Core.News.Services
 {
     /// <summary>
     /// Class HostConfiguration.
