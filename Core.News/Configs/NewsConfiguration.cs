@@ -1,15 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using Core.News.Mail;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Text;
 
-namespace Crypto.Compare.Configs
+namespace Core.News.Configs
 {
     /// <summary>
     /// Class CryptoConfig.
     /// </summary>
-    public class CryptoConfig
+    public class NewsConfiguration
     {
+        const string file = ".\\crypto.config.json";
         /// <summary>
         /// Gets or sets the interval.
         /// </summary>
@@ -29,12 +31,12 @@ namespace Crypto.Compare.Configs
         /// Gets or sets the email.
         /// </summary>
         /// <value>The email.</value>
-        public EmailConfig Email { get; set; }
+        public EmailConfiguration EmailConfiguration { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CryptoConfig"/> class.
+        /// Initializes a new instance of the <see cref="NewsConfiguration"/> class.
         /// </summary>
-        public CryptoConfig()
+        public NewsConfiguration()
         {
             this.Interval = 1000 * 60 * 60 * 24;
             Database = "Crypto.News.CIK_Lite";
@@ -44,12 +46,12 @@ namespace Crypto.Compare.Configs
         /// Loads this instance.
         /// </summary>
         /// <returns>CryptoConfig.</returns>
-        public static CryptoConfig Load()
+        public static NewsConfiguration Load()
         {
-            if (File.Exists(".\\crypto.config.json") == false) return null;
+            if (File.Exists(file) == false) return null;
 
-            var json = File.ReadAllText(".\\crypto.config.json");
-            var config = JsonConvert.DeserializeObject<CryptoConfig>(json);
+            var json = File.ReadAllText(file);
+            var config = JsonConvert.DeserializeObject<NewsConfiguration>(json);
             return config;
         }
         /// <summary>
@@ -58,7 +60,7 @@ namespace Crypto.Compare.Configs
         public void Save()
         {
             var config = JsonConvert.SerializeObject(this, Formatting.Indented);
-            File.WriteAllText(".\\crypto.config.json", config);
+            File.WriteAllText(file, config);
         }
         
     }

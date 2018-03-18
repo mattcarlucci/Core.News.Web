@@ -21,6 +21,9 @@ using Crypto.Compare;
 using Crypto.Compare.Extensions;
 using System.Collections.Generic;
 using Crypto.Compare.Models;
+using System.Threading;
+using Core.News.Configs;
+using Core.News.Mail;
 
 namespace Core.News
 {
@@ -31,6 +34,7 @@ namespace Core.News
     /// <seealso cref="Core.News.IWebClientService" />
     public class WebClientService : WebApiClient, IWebClientService
     {
+        
         /// <summary>
         /// The logger
         /// </summary>
@@ -38,22 +42,34 @@ namespace Core.News
         /// <summary>
         /// The configuration
         /// </summary>
-        private IConfigurationRoot config;
+        private IConfigurationRoot configuration;
         /// <summary>
         /// The news repository
         /// </summary>
         private readonly INewsRepository newsRepository;
+        /// <summary>
+        /// The news configuration
+        /// </summary>
+        private readonly NewsConfiguration newsConfiguration;
+
+        /// <summary>
+        /// The email service
+        /// </summary>
+        private readonly IEmailService emailService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebClientService"/> class.
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
-        /// <param name="config">The configuration.</param>
-        public WebClientService(ILoggerFactory loggerFactory, IConfigurationRoot config, INewsRepository newsRepository)
+        /// <param name="configuration">The configuration.</param>
+        public WebClientService(ILoggerFactory loggerFactory, IConfigurationRoot configuration, 
+            INewsRepository newsRepository, NewsConfiguration newsConfiguration, IEmailService emailService)
         {
-            this.config = config;           
+            this.configuration = configuration;           
             logger = loggerFactory.CreateLogger<WebClientService>();
             this.newsRepository = newsRepository;
+            this.newsConfiguration = newsConfiguration;
+            this.emailService = emailService;
         }
 
         /// <summary>
@@ -67,8 +83,7 @@ namespace Core.News
                 while (true)
                 {
                     RequestLatestNews();                   
-                    //Console.Title = ("Next Scan: " + DateTime.Now.AddMilliseconds(Bootstrap.Interval));
-                    System.Threading.Thread.Sleep(int.Parse(config["Interval"]));
+                    Thread.Sleep(int.Parse(configuration["Interval"]));
                 }
             });
             task.Wait();
@@ -100,7 +115,9 @@ namespace Core.News
         /// <param name="e">The <see cref="T:System.EventArgs" /> instance containing the event data.</param>
         protected override void OnNewsSummaryComplete(object sender, NewsCompleteEventArgs e)
         {
-            logger.LogInformation("Summary Complete {0} stories", e.Stories.Count());            
+            logger.LogInformation("Summary Complete {0} stories", e.Stories.Count());
+            var model = Map.MapStoryView(e.Stories);
+            emailService.Send("Crypto News Alert", model.MailMessage());
         }
         /// <summary>
         /// Handles the <see cref="E:NewsEventComplete" /> event.
@@ -110,6 +127,7 @@ namespace Core.News
         protected override void OnNewsComplete(object sender, NewsCompleteEventArgs e)
         {
             logger.LogInformation("Complete");
+            logger.LogInformation("Next Scan: {0}", DateTime.Now.AddMilliseconds(int.Parse(configuration["Interval"])));
         }
         /// <summary>
         /// Handles the <see cref="E:NewsDetailEventComplete" /> event.
@@ -133,33 +151,8 @@ namespace Core.News
             var category = newsRepository.AddUpdateCategory(Map.MapProvider(e.Story.Provider));
             var content = newsRepository.AddUpdateStory(category, Map.MapStory(e.Story));
             newsRepository.AddUpdateItem(Map.MapItem(category, content));
-
         }
-        /// <summary>
-        /// Saves the stories.
-        /// </summary>
-        /// <param name="providers">The providers.</param>
-        /// <param name="news">The news.</param>
-        public void SaveStories(List<Provider> providers, List<Publication> news)
-        {           
-            DateTime start = DateTime.Now;
-
-            
-            //  using (var scope = new System.Transactions.TransactionScope())
-            //  {
-            foreach (var provider in providers)
-            {
-                var category = newsRepository.AddUpdateCategory(Map.MapProvider(provider));
-                foreach (var story in news.Where(w => w.Source.Name == provider.Name))
-                {
-                    var content = newsRepository.AddUpdateStory(category, Map.MapStory(story));
-                    newsRepository.AddUpdateItem(Map.MapItem(category, content));
-                }
-            }
-            //     scope.Complete();
-            //  }
-            Console.Write("Duration {0}", new TimeSpan(DateTime.Now.Ticks - start.Ticks).Duration());
-        }
+       
     }
 
 }

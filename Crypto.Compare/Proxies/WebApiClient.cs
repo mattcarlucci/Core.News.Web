@@ -6,7 +6,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
-using Crypto.Compare.Configs;
 using Crypto.Compare.Models;
 using System.Diagnostics;
 
