@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using Microsoft.Extensions.Logging;
 using News.Core.SqlServer.Models;
 using System;
 
@@ -14,6 +15,7 @@ namespace News.Core.SqlServer.Migrations
     [DbContext(typeof(NewsDbContext))]
     partial class NewsDbModelSnapshot : ModelSnapshot
     {
+        
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

@@ -31,31 +31,27 @@ namespace Core.News
     public static class Bootstrap
     {
         /// <summary>
-        /// Initalizes this instance.
+        /// Initializes this instance.
         /// </summary>
-        public static void Initalize()
-        {
-            IServiceCollection services = new ServiceCollection();
+        public static void Initialize()
+        {            
+            IServiceCollection services = new ServiceCollection();         
 
             Startup startup = new Startup();
             startup.ConfigureServices(services);
 
-            AutoMapperConfig.RegisterMappings();
-
             IServiceProvider serviceProvider = services.BuildServiceProvider();
-
-            serviceProvider
-                .GetService<ILoggerFactory>().AddConsole(LogLevel.Debug);
-
-            var service = serviceProvider.GetService<IHostedService>();
-            service.StartAsync(new System.Threading.CancellationToken());
-
-            var q = serviceProvider.GetService<IWebClientService>();
-            q.StartAsync(new System.Threading.CancellationToken());
-               
-          //  q.Start();
+            serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Debug);
+            
+            AutoMapperConfig.RegisterMappings();
            
+       //     var service = serviceProvider.GetService<IHostedService>();
+      //      service.StartAsync(new System.Threading.CancellationToken());
+
+            var webClient = serviceProvider.GetService<IWebClientService>();
+            webClient.StartAsync(new System.Threading.CancellationToken());
             Console.ReadLine();
+
         }
     }
 
@@ -109,6 +105,10 @@ namespace Core.News
             });
         }
     }
+
+    /// <summary>
+    /// Class Map.
+    /// </summary>
     public static class Map
     {
         /// <summary>

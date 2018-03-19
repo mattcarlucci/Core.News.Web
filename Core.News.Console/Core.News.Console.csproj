@@ -32,4 +32,8 @@
     <ProjectReference Include="..\News.Core.SqlServer\News.Core.SqlServer.csproj" />
   </ItemGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="copy ..\..\_PRIVATE_\news.config.json $(OutDir)" />
+  </Target>
+
 </Project>

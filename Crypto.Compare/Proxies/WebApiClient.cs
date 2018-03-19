@@ -143,7 +143,7 @@ namespace Crypto.Compare.Proxies
             Parallel.ForEach(stories.OrderBy(o => int.Parse(o.publishedOn)), story =>
             {               
                 using (WebClient cli = new WebClient())
-                    story.UrlData = cli.DownloadString(story.Url);
+                   story.UrlData = cli.DownloadString(story.Url);
 
                 OnNewsDetail(this, NewsDetailEventArgs.Create(story, watch));
             });

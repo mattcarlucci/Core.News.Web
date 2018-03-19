@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
 namespace News.Core.SqlServer.Migrations
 {
     public partial class InitialCreate : Migration
-    {
+    {        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(

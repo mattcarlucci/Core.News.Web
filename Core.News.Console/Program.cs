@@ -11,7 +11,6 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using Core.News.Configs;
 using Core.News.Services;
 using Crypto.Compare;
 using Crypto.Compare.Proxies;
@@ -36,7 +35,7 @@ namespace Core.News
         /// <param name="args">The arguments.</param>
         static void Main(string[] args)
         {            
-            Bootstrap.Initalize();
+            Bootstrap.Initialize();
         }
       
     }

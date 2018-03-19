@@ -11,12 +11,12 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using Core.News.Configs;
 using Core.News.Services;
 using Crypto.Compare.Proxies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using News.Core.SqlServer;
 using News.Core.SqlServer.Models;
 using System;
@@ -47,7 +47,7 @@ namespace Core.News
         public Startup()
         {
             var builder = new ConfigurationBuilder()
-                .AddJsonFile("news.config.json");
+                .AddJsonFile(NewsConfiguration.configFile);
 
             Configuration = builder.Build();
             config = NewsConfiguration.Load();
@@ -61,21 +61,33 @@ namespace Core.News
         {
             services.AddLogging();
             services.AddSingleton(Configuration);
-
+            
             services.AddSingleton<INewsRepository, NewsRepository>();
             services.AddSingleton(Configuration.Get<NewsConfiguration>());
 
             services.AddSingleton<IEmailConfiguration>(Configuration.
                 GetSection("EmailConfiguration").Get<EmailConfiguration>());
 
-            services.AddTransient<IEmailService, EmailService>();
+            services.AddSingleton<IEmailService, EmailService>();
 
             //services.AddSingleton<QuoteProvider>();
             //services.AddSingleton<IHostedService, QuoteService>();
 
             //TODO: Will add other db types. ie Sqlite EF            
-            services.AddDbContext<NewsDbContext>();
-            
+            //services.AddDbContext<NewsDbContext>();
+
+            services.AddEntityFrameworkSqlServer();
+
+            ServiceProvider sp = services.AddScoped<INewsDbContext>(provider => provider.GetService<NewsDbContext>())
+            .AddDbContext<NewsDbContext>((provider, options) =>
+            {
+                options.UseSqlServer(config.GetDefaultConnection().Value);
+                options.UseInternalServiceProvider(provider);
+            })
+            .BuildServiceProvider();                     
+
+            services.AddSingleton(sp);
+       
             services.AddSingleton(config);     
             services.AddSingleton<IScheduledTask, QuoteProviderMock>();
             services.AddSingleton<IWebClientService, WebClientService>();
@@ -85,6 +97,10 @@ namespace Core.News
                 Console.Write(args.Exception.Message);
                 args.SetObserved();
             });
+                        
+            var db = sp.GetService<NewsDbContext>();
+            db.Database.Migrate();
+
         }
     }
 

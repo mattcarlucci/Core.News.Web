@@ -22,7 +22,6 @@ using Crypto.Compare.Extensions;
 using System.Collections.Generic;
 using Crypto.Compare.Models;
 using System.Threading;
-using Core.News.Configs;
 using Core.News.Services;
 
 namespace Core.News
@@ -56,8 +55,6 @@ namespace Core.News
         /// </summary>
         private readonly IEmailService emailService;
 
-        public string Schedule => throw new NotImplementedException();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="WebClientService"/> class.
         /// </summary>
@@ -81,7 +78,8 @@ namespace Core.News
         {
             while (cancellationToken.IsCancellationRequested == false)
             {
-                DateTime start = DateTime.Parse(this.newsConfiguration.IntervalStart);
+                if (!DateTime.TryParse(this.newsConfiguration.IntervalStart, out DateTime start)) break;
+                                
                 TimeSpan span = new TimeSpan(start.Ticks - DateTime.Now.Ticks);
                 logger.LogInformation("Waiting {0} to begin", span.Duration());
                 if (span.TotalMilliseconds <= 0) break;
@@ -162,9 +160,12 @@ namespace Core.News
             //newsRepository.AddUpdateCategory(e.)
             logger.LogInformation("Read Details {0} bytes", e.Story.UrlData.Count());
 
-            var category = newsRepository.AddUpdateCategory(Map.Provider(e.Story.Provider));
-            var content = newsRepository.AddUpdateStory(category, Map.Story(e.Story));
-            newsRepository.AddUpdateItem(Map.Item(category, content));
+            lock (logger)
+            {
+                var category = newsRepository.AddUpdateCategory(Map.Provider(e.Story.Provider));
+                var content = newsRepository.AddUpdateStory(category, Map.Story(e.Story));
+                newsRepository.AddUpdateItem(Map.Item(category, content));
+            }
         }        
     }
 }

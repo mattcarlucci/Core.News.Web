@@ -36,5 +36,11 @@ namespace News.Core.SqlServer.Models
         /// </summary>
         /// <value>The items.</value>
         DbSet<Item> Items { get; set; }
+
+        /// <summary>
+        /// Saves the changes.
+        /// </summary>
+        /// <returns>System.Int32.</returns>
+        int SaveChanges();
     }
 }

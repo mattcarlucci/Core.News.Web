@@ -5,20 +5,30 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace News.Core.SqlServer
 {
     public class NewsRepository : INewsRepository
     {
-        INewsDbContext db;
+        /// <summary>
+        /// The database
+        /// </summary>
+        INewsDbContext _db;
+
+        /// <summary>
+        /// The provider
+        /// </summary>
+        ServiceProvider provider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NewsRepository"/> class.
         /// </summary>
         /// <param name="db">The database.</param>
-        public NewsRepository(NewsDbContext db)
+        public NewsRepository(NewsDbContext db, ServiceProvider provider)
         {
-            this.db = db;
+            this._db = db;
+            this.provider = provider;
         }
       
         /// <summary>
@@ -27,8 +37,8 @@ namespace News.Core.SqlServer
         /// <returns>DateTime.</returns>
         public DateTime GetLastContentDate()
         {
-            if (db.ItemContents.Count() == 0) return DateTime.Now.AddDays(-2);
-            return db.ItemContents.Max(m => m.CreatedDate);
+            if (_db.ItemContents.Count() == 0) return DateTime.Now.AddDays(-2);
+            return _db.ItemContents.Max(m => m.CreatedDate);
         }
 
         /// <summary>
@@ -39,17 +49,20 @@ namespace News.Core.SqlServer
 
         public Item AddUpdateItem(Item item)
         {
-            using (NewsDbContext db = new NewsDbContext())
+            using (var scope = provider.CreateScope())
             {
+                var db = scope.ServiceProvider.GetService<INewsDbContext>();
+                
                 var _item = db.Items.SingleOrDefault(s =>
-                s.CategoryId == item.CategoryId && s.ItemContentId == item.ItemContentId);
+                    s.CategoryId == item.CategoryId && s.ItemContentId == item.ItemContentId);
 
                 if (_item != null) return _item;
                 db.Items.Add(item);
                 db.SaveChanges();
                 return item;
-            }
+            }        
         }
+
         /// <summary>
         /// Adds the update category.
         /// </summary>
@@ -58,15 +71,17 @@ namespace News.Core.SqlServer
 
         public Category AddUpdateCategory(Category category)
         {
-            using (NewsDbContext db = new NewsDbContext())
+            using (var scope = provider.CreateScope())
             {
+                var db = scope.ServiceProvider.GetService<INewsDbContext>();
+
                 var _category = db.Categories.SingleOrDefault(s => s.Name == category.Name);
                 if (_category != null) return _category;
-
+                
                 db.Categories.Add(category);
                 db.SaveChanges();
                 return category;
-            }
+            }            
         }
         /// <summary>
         /// Adds the update story.
@@ -76,10 +91,11 @@ namespace News.Core.SqlServer
         /// <returns>ItemContent.</returns>
         public ItemContent AddUpdateStory(Category category, ItemContent content)
         {
-            using (NewsDbContext db = new NewsDbContext())
+            using (var scope = provider.CreateScope())
             {
+                var db = scope.ServiceProvider.GetService<INewsDbContext>();
                 var _content = db.ItemContents.SingleOrDefault(s =>
-            s.Title == content.Title && s.CreatedBy == content.CreatedBy);
+                    s.Title == content.Title && s.CreatedBy == content.CreatedBy);
 
                 if (_content != null) return _content;
                 db.ItemContents.Add(content);

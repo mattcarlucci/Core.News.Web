@@ -47,7 +47,7 @@ namespace Crypto.Compare.Models
         /// Gets or sets the URL data.
         /// </summary>
         /// <value>The URL data.</value>
-        public string UrlData { get; set; }       
+        public string UrlData { get; set; } = "";
         /// <summary>
         /// Gets or sets the body.
         /// </summary>
