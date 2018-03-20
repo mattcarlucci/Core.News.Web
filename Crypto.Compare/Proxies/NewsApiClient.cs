@@ -1,5 +1,18 @@
 ﻿using Crypto.Compare.Extensions;
 using Newtonsoft.Json;
+// ***********************************************************************
+// Assembly         : Crypto.Compare
+// Author           : mcarlucci
+// Created          : 03-17-2018
+//
+// Last Modified By : mcarlucci
+// Last Modified On : 03-17-2018
+// ***********************************************************************
+// <copyright file="NewsApiClient.cs" company="Crypto.Compare">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -12,10 +25,10 @@ using System.Diagnostics;
 namespace Crypto.Compare.Proxies
 {
     /// <summary>
-    /// Class WebApiClient.
+    /// Class NewsApiClient.
     /// </summary>
-    /// <seealso cref="Crypto.News.WebApiEvents" />
-    public class WebApiClient : WebApiEvents, IWebApiClient, IWebApiEvents
+    /// <seealso cref="Crypto.News.NewsApiEvents" />
+    public class NewsApiClient : NewsApiEvents, INewsApiClient, INewsApiEvents
     {
         /// <summary>
         /// The watch
@@ -50,23 +63,23 @@ namespace Crypto.Compare.Proxies
         protected int StartDate { get; set; }
        
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebApiClient"/> class.
+        /// Initializes a new instance of the <see cref="NewsApiClient"/> class.
         /// </summary>
         /// <param name="config">The configuration.</param>
-        public WebApiClient() { }
+        public NewsApiClient() { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebApiClient" /> class.
+        /// Initializes a new instance of the <see cref="NewsApiClient" /> class.
         /// </summary>
         /// <param name="skipDetails">if set to <c>true</c> [skip details].</param>
-        public WebApiClient(bool skipDetails) : this(skipDetails, DateTime.Now) { }
+        public NewsApiClient(bool skipDetails) : this(skipDetails, DateTime.Now) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebApiClient"/> class.
+        /// Initializes a new instance of the <see cref="NewsApiClient"/> class.
         /// </summary>
         /// <param name="skipDetails">if set to <c>true</c> [skip details].</param>
         /// <param name="startDate">The start date.</param>
-        public WebApiClient(bool skipDetails, DateTime startDate) 
+        public NewsApiClient(bool skipDetails, DateTime startDate) 
         {
             this.skipDetails = skipDetails;
             StartDate = startDate.
@@ -74,10 +87,10 @@ namespace Crypto.Compare.Proxies
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebApiClient"/> class.
+        /// Initializes a new instance of the <see cref="NewsApiClient"/> class.
         /// </summary>
         /// <param name="startDate">The start date.</param>
-        public WebApiClient(DateTime startDate) : this(false, startDate) { }
+        public NewsApiClient(DateTime startDate) : this(false, startDate) { }
 
         /// <summary>
         /// Gets the latest news.
@@ -167,8 +180,6 @@ namespace Crypto.Compare.Proxies
                 story.Body = story.Body.Ascii();
                 story.Provider = providers.SingleOrDefault(s => s.Name == story.Source.Name);                
             });
-        }
-
-      
+        }      
     }
 }

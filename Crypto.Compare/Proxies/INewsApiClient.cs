@@ -2,7 +2,7 @@
 
 namespace Crypto.Compare.Proxies
 {
-    public interface IWebApiClient
+    public interface INewsApiClient
     {
         int StoryCount { get; set; }
 

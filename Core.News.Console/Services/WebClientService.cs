@@ -30,9 +30,9 @@ namespace Core.News
     /// <summary>
     /// Class WebClientService.
     /// </summary>
-    /// <seealso cref="Crypto.Compare.Proxies.WebApiClient" />
+    /// <seealso cref="Crypto.Compare.Proxies.NewsApiClient" />
     /// <seealso cref="Core.News.IWebClientService" />
-    public class WebClientService : WebApiClient, IWebClientService
+    public class WebClientService : NewsApiClient, IWebClientService
     {        
         /// <summary>
         /// The logger

@@ -6,7 +6,7 @@
 // Last Modified By : mcarlucci
 // Last Modified On : 03-17-2018
 // ***********************************************************************
-// <copyright file="WebApiEvents.cs" company="Crypto.Compare">
+// <copyright file="NewsApiEvents.cs" company="Crypto.Compare">
 //     Copyright (c) . All rights reserved.
 // </copyright>
 // <summary></summary>
@@ -16,9 +16,9 @@ using System;
 namespace Crypto.Compare.Proxies
 {
     /// <summary>
-    /// Class WebApiEvents.
+    /// Class NewsApiEvents.
     /// </summary>
-    public class WebApiEvents : IWebApiEvents
+    public class NewsApiEvents : INewsApiEvents
     {
         /// <summary>
         /// The start

@@ -2,7 +2,7 @@
 
 namespace Crypto.Compare.Proxies
 {
-    public interface IWebApiEvents
+    public interface INewsApiEvents
     {
         EventHandler<NewsCompleteEventArgs> NewsComplete { get; set; }
         EventHandler<NewsDetailEventArgs> NewsDetail { get; set; }

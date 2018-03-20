@@ -28,7 +28,7 @@ namespace Crypto.Compare.Tests
         [Fact]
         public void VerifyConnection()
         {
-            WebApiClient client = new WebApiClient(true, DateTime.Now.AddDays(1));
+            NewsApiClient client = new NewsApiClient(true, DateTime.Now.AddDays(1));
             client.RequestLatestNews();
             Assert.Equal(0, client.StoryCount);
         }
