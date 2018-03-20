@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using Crypto.Compare.Models;
 using System.Threading;
 using Core.News.Services;
+using Core.News.Repositories;
 
 namespace Core.News
 {

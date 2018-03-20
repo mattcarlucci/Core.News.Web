@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Core.News.Entities;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net;

@@ -14,7 +14,7 @@
 using AutoMapper;
 using Core.News.Services;
 using Core.News.ViewModels;
-using Core.News.Web.Entities;
+using Core.News.Entities;
 using Crypto.Compare.Extensions;
 using Crypto.Compare.Models;
 using Microsoft.Extensions.DependencyInjection;

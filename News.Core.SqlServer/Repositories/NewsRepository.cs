@@ -1,11 +1,13 @@
 ﻿using Core.News;
-using Core.News.Web.Entities;
+using Core.News.Entities;
 using News.Core.SqlServer.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Core.News.Repositories;
 
 namespace News.Core.SqlServer
 {
@@ -14,12 +16,12 @@ namespace News.Core.SqlServer
         /// <summary>
         /// The database
         /// </summary>
-        INewsDbContext _db;
+        INewsDbContext db;
 
         /// <summary>
         /// The provider
         /// </summary>
-        ServiceProvider provider;
+        IServiceProvider provider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NewsRepository"/> class.
@@ -27,7 +29,7 @@ namespace News.Core.SqlServer
         /// <param name="db">The database.</param>
         public NewsRepository(NewsDbContext db, ServiceProvider provider)
         {
-            this._db = db;
+            this.db = db;
             this.provider = provider;
         }
       
@@ -37,8 +39,8 @@ namespace News.Core.SqlServer
         /// <returns>DateTime.</returns>
         public DateTime GetLastContentDate()
         {
-            if (_db.ItemContents.Count() == 0) return DateTime.Now.AddDays(-2);
-            return _db.ItemContents.Max(m => m.CreatedDate);
+            if (db.ItemContents.Count() == 0) return DateTime.Now.AddDays(-2);
+            return db.ItemContents.Max(m => m.CreatedDate);
         }
 
         /// <summary>
@@ -51,15 +53,8 @@ namespace News.Core.SqlServer
         {
             using (var scope = provider.CreateScope())
             {
-                var db = scope.ServiceProvider.GetService<INewsDbContext>();
-                
-                var _item = db.Items.SingleOrDefault(s =>
-                    s.CategoryId == item.CategoryId && s.ItemContentId == item.ItemContentId);
-
-                if (_item != null) return _item;
-                db.Items.Add(item);
-                db.SaveChanges();
-                return item;
+                return scope.ServiceProvider.GetService<DbContext>()
+                   .AddOrUpdate(item, w => w.CategoryId == item.CategoryId && w.ItemContentId == item.ItemContentId);              
             }        
         }
 
@@ -73,14 +68,8 @@ namespace News.Core.SqlServer
         {
             using (var scope = provider.CreateScope())
             {
-                var db = scope.ServiceProvider.GetService<INewsDbContext>();
-
-                var _category = db.Categories.SingleOrDefault(s => s.Name == category.Name);
-                if (_category != null) return _category;
-                
-                db.Categories.Add(category);
-                db.SaveChanges();
-                return category;
+                return scope.ServiceProvider.GetService<DbContext>()
+                    .AddOrUpdate(category, w => w.Name == category.Name);             
             }            
         }
         /// <summary>
@@ -93,17 +82,9 @@ namespace News.Core.SqlServer
         {
             using (var scope = provider.CreateScope())
             {
-                var db = scope.ServiceProvider.GetService<INewsDbContext>();
-                var _content = db.ItemContents.SingleOrDefault(s =>
-                    s.Title == content.Title && s.CreatedBy == content.CreatedBy);
-
-                if (_content != null) return _content;
-                db.ItemContents.Add(content);
-
-                db.SaveChanges();
-                return content;
+                return scope.ServiceProvider.GetService<DbContext>()
+                   .AddOrUpdate(content, w => w.CreatedBy == content.CreatedBy && w.Title == content.Title);
             }
         }
-
     }
 }

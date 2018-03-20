@@ -1,4 +1,5 @@
-﻿using Core.News.Services;
+﻿using Core.News.Mail;
+using Core.News.Services;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;

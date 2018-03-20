@@ -18,6 +18,7 @@ using System.Net.Mail;
 using System.Linq;
 using static Core.News.Services.EmailService;
 using Microsoft.Extensions.Logging;
+using Core.News.Mail;
 
 namespace Core.News.Services
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.News.Services
+namespace Core.News.Entities
 {
     public class QuoteOfTheDay
     {

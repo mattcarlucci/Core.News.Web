@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.News.Services
+namespace Core.News.Mail
 {
     /// <summary>
     /// Class EmailUserConfiguration.

@@ -12,7 +12,7 @@
 // <summary></summary>
 // ***********************************************************************
 using Core.News;
-using Core.News.Web.Entities;
+using Core.News.Entities;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

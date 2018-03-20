@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using System.Net.Mail;
 
-namespace Core.News.Services
+namespace Core.News.Mail
 {
 
     /// <summary>

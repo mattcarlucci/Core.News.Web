@@ -11,11 +11,11 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using Core.News.Web.Entities;
+using Core.News.Entities;
 using System;
 using System.Collections.Generic;
 
-namespace Core.News
+namespace Core.News.Repositories
 {
     /// <summary>
     /// Interface INewsRepository

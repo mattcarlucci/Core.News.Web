@@ -14,7 +14,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Core.News
+namespace Core.News.Services
 {
     /// <summary>
     /// Interface IWebClientService

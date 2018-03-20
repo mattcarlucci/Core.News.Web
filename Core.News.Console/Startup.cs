@@ -11,6 +11,8 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+using Core.News.Mail;
+using Core.News.Repositories;
 using Core.News.Services;
 using Crypto.Compare.Proxies;
 using Microsoft.EntityFrameworkCore;
@@ -78,7 +80,8 @@ namespace Core.News
 
             services.AddEntityFrameworkSqlServer();
 
-            ServiceProvider sp = services.AddScoped<INewsDbContext>(provider => provider.GetService<NewsDbContext>())
+            ServiceProvider sp = services.AddScoped<DbContext>(provider => 
+             provider.GetService<NewsDbContext>())
             .AddDbContext<NewsDbContext>((provider, options) =>
             {
                 options.UseSqlServer(config.GetDefaultConnection().Value);
@@ -97,11 +100,10 @@ namespace Core.News
                 Console.Write(args.Exception.Message);
                 args.SetObserved();
             });
-                        
-            var db = sp.GetService<NewsDbContext>();
-            db.Database.Migrate();
 
+            //should we run the migration each time?
+            using (var db = sp.GetService<NewsDbContext>())
+                db.Database.Migrate();
         }
     }
-
 }

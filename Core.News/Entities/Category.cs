@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.News.Web.Entities
+namespace Core.News.Entities
 {
     /// <summary>
     /// Class Category.

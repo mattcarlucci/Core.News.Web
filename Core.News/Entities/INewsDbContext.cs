@@ -11,7 +11,7 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using Core.News.Web.Entities;
+using Core.News.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace News.Core.SqlServer.Models

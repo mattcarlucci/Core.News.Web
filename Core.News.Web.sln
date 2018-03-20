@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.News.Web", "Core.News.Web\Core.News.Web.csproj", "{85B28B21-D68C-4F91-A066-A9143C0F4F77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.News.Web", "Core.News.Web\Core.News.Web.csproj", "{85B28B21-D68C-4F91-A066-A9143C0F4F77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crypto.Compare", "Crypto.Compare\Crypto.Compare.csproj", "{61F01308-A799-4D67-8A0A-F4E7136F5926}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crypto.Compare", "Crypto.Compare\Crypto.Compare.csproj", "{61F01308-A799-4D67-8A0A-F4E7136F5926}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.News", "Core.News\Core.News.csproj", "{DA091213-DA08-4097-AB02-35355B46088E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.News", "Core.News\Core.News.csproj", "{DA091213-DA08-4097-AB02-35355B46088E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.News.Console", "Core.News.Console\Core.News.Console.csproj", "{9A3F9553-E3B3-471C-9F8A-832169A36344}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.News.Console", "Core.News.Console\Core.News.Console.csproj", "{9A3F9553-E3B3-471C-9F8A-832169A36344}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crypto.Compare.Tests", "Crypto.Compare.Tests\Crypto.Compare.Tests.csproj", "{12550597-8DEE-447C-BC45-0CC8414BD0D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crypto.Compare.Tests", "Crypto.Compare.Tests\Crypto.Compare.Tests.csproj", "{12550597-8DEE-447C-BC45-0CC8414BD0D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "News.Core.SqlServer", "News.Core.SqlServer\News.Core.SqlServer.csproj", "{6287C73B-BB85-4176-BA6D-5CD7A7EB0EFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "News.Core.SqlServer", "News.Core.SqlServer\News.Core.SqlServer.csproj", "{6287C73B-BB85-4176-BA6D-5CD7A7EB0EFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.News.Tests", "Core.News.Tests\Core.News.Tests.csproj", "{5797A4EC-523A-454B-A7B9-D90752CD3747}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{6287C73B-BB85-4176-BA6D-5CD7A7EB0EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6287C73B-BB85-4176-BA6D-5CD7A7EB0EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6287C73B-BB85-4176-BA6D-5CD7A7EB0EFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5797A4EC-523A-454B-A7B9-D90752CD3747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5797A4EC-523A-454B-A7B9-D90752CD3747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5797A4EC-523A-454B-A7B9-D90752CD3747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5797A4EC-523A-454B-A7B9-D90752CD3747}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
