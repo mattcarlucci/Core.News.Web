@@ -6,7 +6,6 @@ namespace Crypto.Compare.Extensions
 {
     public static class Extensions
     {
-
         /// <summary>
         /// Froms the unix time.
         /// </summary>

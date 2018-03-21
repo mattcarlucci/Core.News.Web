@@ -154,11 +154,19 @@ namespace Crypto.Compare.Proxies
             if (skipDetails) return stories;
 
             Parallel.ForEach(stories.OrderBy(o => int.Parse(o.publishedOn)), story =>
-            {               
-                using (WebClient cli = new WebClient())
-                   story.UrlData = cli.DownloadString(story.Url);
+            {
+                try
+                {
+                    using (WebClient cli = new WebClient())
+                        story.UrlData = cli.DownloadString(story.Url);
 
-                OnNewsDetail(this, NewsDetailEventArgs.Create(story, watch));
+                    OnNewsDetail(this, NewsDetailEventArgs.Create(story, watch));
+                }
+                catch(Exception)
+                {      
+                    //TODO: need to log errors
+                    return;
+                }
             });
 
             OnNewsDetailComplete(this, NewsCompleteEventArgs.Create(stories, watch));

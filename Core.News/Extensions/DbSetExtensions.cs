@@ -15,9 +15,13 @@ using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Core.News
-{
+{   
     /// <summary>
     /// Class DbSetExtensions.
     /// </summary>
@@ -42,7 +46,34 @@ namespace Core.News
             db.Set<T>().Add(entity);           
             db.SaveChanges();
             return entity;
+        }
 
+
+        /// <summary>
+        /// Transforms the specified dt.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dt">The dt.</param>
+        /// <returns>List&lt;T&gt;.</returns>
+        public static List<T> Transform<T>(this DataTable dt) where T : class, new()
+        {
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+            var cols = dt.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
+                       
+            var target = dt.AsEnumerable().Select(row =>
+            {
+                T entity = new T();
+                var properties = typeof(T).GetProperties(flags).
+                    Where(p => cols.Contains(p.Name) && row[p.Name] != DBNull.Value);
+                Parallel.ForEach(properties, prop =>
+              //  foreach (var prop in properties)
+                {
+                    prop.SetValue(entity, Convert.ChangeType(row[prop.Name], prop.PropertyType), null);
+                });
+                return entity;
+            }).ToList();
+
+            return target;
         }
     }
 }

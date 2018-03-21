@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crypto.Compare.Tests", "Cry
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "News.Core.SqlServer", "News.Core.SqlServer\News.Core.SqlServer.csproj", "{6287C73B-BB85-4176-BA6D-5CD7A7EB0EFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.News.Tests", "Core.News.Tests\Core.News.Tests.csproj", "{5797A4EC-523A-454B-A7B9-D90752CD3747}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.News.Tests", "Core.News.Tests\Core.News.Tests.csproj", "{5797A4EC-523A-454B-A7B9-D90752CD3747}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
