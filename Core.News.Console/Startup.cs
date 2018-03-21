@@ -35,13 +35,13 @@ namespace Core.News
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        public static IConfigurationRoot Configuration { get; private set; }
+        private static IConfigurationRoot Configuration { get; set; }
 
         /// <summary>
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        public static NewsConfiguration config { get; private set; }
+        private static NewsConfiguration config;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Startup"/> class.
@@ -81,7 +81,7 @@ namespace Core.News
             services.AddEntityFrameworkSqlServer();
 
             ServiceProvider sp = services.AddScoped<DbContext>(provider => 
-             provider.GetService<NewsDbContext>())
+            provider.GetService<NewsDbContext>())
             .AddDbContext<NewsDbContext>((provider, options) =>
             {
                 options.UseSqlServer(config.GetDefaultConnection().Value);

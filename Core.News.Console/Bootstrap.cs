@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Hosting;
 
 namespace Core.News
 {
@@ -45,11 +46,11 @@ namespace Core.News
             
             AutoMapperConfig.RegisterMappings();
            
-       //     var service = serviceProvider.GetService<IHostedService>();
-      //      service.StartAsync(new System.Threading.CancellationToken());
+            var service = serviceProvider.GetService<IHostedService>();
+            service.StartAsync(new System.Threading.CancellationToken());
 
-            var webClient = serviceProvider.GetService<IWebClientService>();
-            webClient.StartAsync(new System.Threading.CancellationToken());
+          //  var webClient = serviceProvider.GetService<IWebClientService>();
+          //  webClient.StartAsync(new System.Threading.CancellationToken());
             Console.ReadLine();
 
         }

@@ -1,5 +1,6 @@
 using System;
 using Xunit;
+using Core.News;
 
 namespace Core.News.Tests
 {
@@ -8,7 +9,7 @@ namespace Core.News.Tests
         [Fact]
         public void Test1()
         {
-
+          
         }
     }
 }

@@ -54,8 +54,8 @@ namespace Core.News.Services
             {
                 Credentials = new NetworkCredential(settings.Smtp.UserName, settings.Smtp.Password),
                 DeliveryMethod = SmtpDeliveryMethod.Network,
-               EnableSsl = settings.UseSsl
-            //    UseDefaultCredentials = true
+                EnableSsl = settings.UseSsl
+               // UseDefaultCredentials = true
         };
         }
         

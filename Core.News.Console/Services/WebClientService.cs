@@ -128,7 +128,7 @@ namespace Core.News
             var model = Map.StoryView(e.Stories);
             if (e.Stories.Count == 0) return;
 
-            emailService.Send("Crypto News Alert", model.MailMessage());
+           // emailService.Send("Crypto News Alert", model.MailMessage());
         }
         /// <summary>
         /// Handles the <see cref="E:NewsEventComplete" /> event.

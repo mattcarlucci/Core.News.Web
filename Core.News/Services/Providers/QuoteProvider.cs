@@ -10,12 +10,27 @@ using System.Threading.Tasks;
 
 namespace Core.News.Services
 {
-    public class QuoteProviderMock : IScheduledTask
+    public class NewsEmailProvider : IScheduledTask
     {
         public string Schedule => "* */6 * * *";
 
+        public Task ExecuteAsync(CancellationToken cancellationToken)
+        {
+            //TODO: This is where we will send emails
+            //need a db context, logger context and posible logger context
+            throw new NotImplementedException();
+        }
+    }
+    public class QuoteProviderMock : IScheduledTask
+    {
+        public string Schedule => CronExprs.every_10_seconds;// "* */6 * * *";
+        
+
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
+            Console.WriteLine("Running Quote Serivce  {0}", 
+                CronExpressionDescriptor.ExpressionDescriptor.GetDescription(Schedule));
+
             Task t = Task.Run(() =>
             {
                 QuoteOfTheDay.Current = new QuoteOfTheDay() { Quote = "This is a mock", Author = "Matt" };

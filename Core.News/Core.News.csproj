@@ -5,9 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Cron\Model\**" />
     <Compile Remove="Services\Cron\**" />
+    <Compile Remove="Services\Scheduling\**" />
+    <EmbeddedResource Remove="Cron\Model\**" />
     <EmbeddedResource Remove="Services\Cron\**" />
+    <EmbeddedResource Remove="Services\Scheduling\**" />
+    <None Remove="Cron\Model\**" />
     <None Remove="Services\Cron\**" />
+    <None Remove="Services\Scheduling\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,18 +22,18 @@
     <Compile Remove="Services\QuoteOfTheDayTask.cs" />
     <Compile Remove="Services\SchedulerExtensions.cs" />
     <Compile Remove="Services\SchedulerHostedServiceScope.cs" />
-    <Compile Remove="Services\Scheduling\SchedulerTaskWrapper.cs" />
     <Compile Remove="Services\SomeOtherTask.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Chroniton.NetCore" Version="1.0.3.3" />
+    <PackageReference Include="CronExpressionDescriptor" Version="2.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.1.0-preview1-final" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.1" />
-    <PackageReference Include="ncrontab" Version="3.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="Quartz" Version="3.0.4" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0-preview1-26216-02" />
   </ItemGroup>
 
@@ -39,6 +45,7 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Services\Scheduling\" />
   </ItemGroup>
 
 </Project>

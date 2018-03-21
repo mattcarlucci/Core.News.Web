@@ -1,10 +1,9 @@
-﻿using NCrontab;
-using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Core.News.Services;
+using Microsoft.Extensions.Hosting;
 
-
-namespace Core.News.Services
+namespace Core.News
 {
     public abstract class HostedService : IHostedService
     {
@@ -46,6 +45,5 @@ namespace Core.News.Services
         // Derived classes should override this and execute a long running method until 
         // cancellation is requested
         protected abstract Task ExecuteAsync(CancellationToken cancellationToken);
-        
     }
 }

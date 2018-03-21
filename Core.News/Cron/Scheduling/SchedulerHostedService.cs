@@ -1,32 +1,28 @@
 ﻿// ***********************************************************************
 // Assembly         : Core.News
 // Author           : mcarlucci
-// Created          : 03-18-2018
+// Created          : 03-21-2018
 //
 // Last Modified By : mcarlucci
-// Last Modified On : 03-18-2018
+// Last Modified On : 03-21-2018
 // ***********************************************************************
 // <copyright file="SchedulerHostedService.cs" company="Core.News">
 //     Copyright (c) . All rights reserved.
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using NCrontab;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Core.News.Services
+namespace Core.News
 {
     /// <summary>
     /// Class SchedulerHostedService.
     /// </summary>
-    /// <seealso cref="Core.News.Services.HostedService" />
+    /// <seealso cref="Core.News.HostedService" />
     public class SchedulerHostedService : HostedService
     {
         /// <summary>
@@ -38,34 +34,24 @@ namespace Core.News.Services
         /// The scheduled tasks
         /// </summary>
         private readonly List<SchedulerTaskWrapper> _scheduledTasks = new List<SchedulerTaskWrapper>();
-        /// <summary>
-        /// The log factory
-        /// </summary>
-        private readonly ILoggerFactory logFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SchedulerHostedService" /> class.
+        /// Initializes a new instance of the <see cref="SchedulerHostedService"/> class.
         /// </summary>
         /// <param name="scheduledTasks">The scheduled tasks.</param>
-        /// <param name="logFactory">The log factory.</param>
-        /// <exception cref="ArgumentNullException">serviceScopeFactory</exception>
-        public SchedulerHostedService(IEnumerable<IScheduledTask> scheduledTasks, ILoggerFactory logFactory)
-        {            
-            this.logFactory = logFactory;
+        public SchedulerHostedService(IEnumerable<IScheduledTask> scheduledTasks)
+        {
             var referenceTime = DateTime.UtcNow;
-
-            var log = logFactory.CreateLogger<SchedulerHostedService>();
-            log.LogInformation("Scheduler Hosted Service is running.");
-
+            
             foreach (var scheduledTask in scheduledTasks)
             {
                 _scheduledTasks.Add(new SchedulerTaskWrapper
                 {
-                    Schedule = CrontabSchedule.Parse(scheduledTask.Schedule),
+                    Schedule = new CronExpression(scheduledTask.Schedule),
                     Task = scheduledTask,
                     NextRunTime = referenceTime
                 });
-            }            
+            }
         }
 
         /// <summary>
@@ -78,7 +64,7 @@ namespace Core.News.Services
             while (!cancellationToken.IsCancellationRequested)
             {
                 await ExecuteOnceAsync(cancellationToken);
-
+                
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
             }
         }
@@ -92,7 +78,7 @@ namespace Core.News.Services
         {
             var taskFactory = new TaskFactory(TaskScheduler.Current);
             var referenceTime = DateTime.UtcNow;
-
+            
             var tasksThatShouldRun = _scheduledTasks.Where(t => t.ShouldRun(referenceTime)).ToList();
 
             foreach (var taskThatShouldRun in tasksThatShouldRun)
@@ -110,9 +96,9 @@ namespace Core.News.Services
                         {
                             var args = new UnobservedTaskExceptionEventArgs(
                                 ex as AggregateException ?? new AggregateException(ex));
-
+                            
                             UnobservedTaskException?.Invoke(this, args);
-
+                            
                             if (!args.Observed)
                             {
                                 throw;
@@ -132,7 +118,7 @@ namespace Core.News.Services
             /// Gets or sets the schedule.
             /// </summary>
             /// <value>The schedule.</value>
-            public CrontabSchedule Schedule { get; set; }
+            public CronExpression Schedule { get; set; }
             /// <summary>
             /// Gets or sets the task.
             /// </summary>
@@ -143,12 +129,12 @@ namespace Core.News.Services
             /// Gets or sets the last run time.
             /// </summary>
             /// <value>The last run time.</value>
-            public DateTime LastRunTime { get; set; }
+            public DateTimeOffset LastRunTime { get; set; }
             /// <summary>
             /// Gets or sets the next run time.
             /// </summary>
             /// <value>The next run time.</value>
-            public DateTime NextRunTime { get; set; }
+            public DateTimeOffset NextRunTime { get; set; }
 
             /// <summary>
             /// Increments this instance.
@@ -156,7 +142,8 @@ namespace Core.News.Services
             public void Increment()
             {
                 LastRunTime = NextRunTime;
-                NextRunTime = Schedule.GetNextOccurrence(NextRunTime);
+                NextRunTime = Schedule.GetNextValidTimeAfter(DateTime.UtcNow).
+                    GetValueOrDefault().ToLocalTime();
             }
 
             /// <summary>
