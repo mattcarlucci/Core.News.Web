@@ -28,6 +28,11 @@ namespace Core.News.Services
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
         Task StartAsync(CancellationToken cancellationToken);
+        /// <summary>
+        /// Starts the specified cancellation.
+        /// </summary>
+        /// <param name="cancellation">The cancellation.</param>
+        void Start(CancellationToken cancellation);
     }
 
 }

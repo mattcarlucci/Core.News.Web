@@ -8,7 +8,7 @@ namespace Crypto.Compare.Models.Historical
     {
 
         [JsonProperty("time")]
-        [JsonConverter(typeof(MicrosecondEpochConverter))]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime TimeId { get; set; }
 
         [JsonProperty("close")]

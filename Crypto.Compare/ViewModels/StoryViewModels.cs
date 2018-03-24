@@ -14,7 +14,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.News.ViewModels
+namespace Crypto.Compare.ViewModels
 {
     /// <summary>
     /// Class StoryViewModels.

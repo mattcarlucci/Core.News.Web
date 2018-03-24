@@ -71,7 +71,9 @@ namespace Crypto.Compare.Tests
         [Fact]
         public void VerifySocialStats()
         {
-            repo.GetSocialStats(coins);
+            var results = repo.GetSocialStats(coins.Take(1));
+            Assert.True(results.Count() == 1);
+           
         }
         /// <summary>
         /// Verifies the daily bars.
@@ -79,7 +81,8 @@ namespace Crypto.Compare.Tests
         [Fact]
         public void VerifyDailyBars()
         {
-            (var day_good, var day_bad) = repo.GetHistorical<DailyBars>(coins, "histoday");
+            (var day_good, var day_bad) = repo.GetHistorical<DailyBars>(coins.Take(1), "histoday",1);
+            Assert.True(day_good.Count() == 1 || day_bad.Count() == 1);
 
         }
         /// <summary>
@@ -88,7 +91,8 @@ namespace Crypto.Compare.Tests
         [Fact]
         public void VerifyHourBars()
         {
-            (var hour_good, var hour_bad) = repo.GetHistorical<HourBars>(coins, "histohour");
+            (var hour_good, var hour_bad) = repo.GetHistorical<HourBars>(coins.Take(1), "histohour",1);
+            Assert.True(hour_good.Count() == 1 || hour_bad.Count() == 1);
 
         }
         /// <summary>
@@ -97,7 +101,8 @@ namespace Crypto.Compare.Tests
         [Fact]
         public void VerifyMinuteBars()
         {
-            (var minute_good, var minute_bad) = repo.GetHistorical<MinuteBars>(coins, "histominute");
+            (var minute_good, var minute_bad) = repo.GetHistorical<MinuteBars>(coins.Take(1), "histominute",1);
+            Assert.True(minute_good.Count() == 1 || minute_bad.Count() == 1);
 
         }
     }

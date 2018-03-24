@@ -26,7 +26,7 @@ namespace Crypto.Compare.Models.CoinInfo
         public double Price { get; set; }
 
         [JsonProperty("LASTUPDATE")]
-        [JsonConverter(typeof(MicrosecondEpochConverter))]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime LastUpdate { get; set; }
 
         [JsonProperty("LASTVOLUME")]

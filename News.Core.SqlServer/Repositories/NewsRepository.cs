@@ -1,4 +1,17 @@
-﻿using Core.News;
+﻿// ***********************************************************************
+// Assembly         : News.Core.SqlServer
+// Author           : mcarlucci
+// Created          : 03-19-2018
+//
+// Last Modified By : mcarlucci
+// Last Modified On : 03-24-2018
+// ***********************************************************************
+// <copyright file="NewsRepository.cs" company="News.Core.SqlServer">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using Core.News;
 using Core.News.Entities;
 using News.Core.SqlServer.Models;
 using System;
@@ -9,8 +22,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Core.News.Repositories;
 
+
+/// <summary>
+/// The SqlServer namespace.
+/// </summary>
 namespace News.Core.SqlServer
 {
+    /// <summary>
+    /// Class NewsRepository.
+    /// </summary>
+    /// <seealso cref="Core.News.Repositories.INewsRepository" />
     public class NewsRepository : INewsRepository
     {
         /// <summary>
@@ -31,6 +52,7 @@ namespace News.Core.SqlServer
         {
             this.db = db;
             this.provider = provider;
+            db.Database.Migrate();
         }
       
         /// <summary>
@@ -86,5 +108,59 @@ namespace News.Core.SqlServer
                    .AddOrUpdate(content, w => w.CreatedBy == content.CreatedBy && w.Title == content.Title);
             }
         }
+
+        /// <summary>
+        /// Gets the schedules.
+        /// </summary>
+        /// <param name="schedule">The schedule.</param>
+        /// <returns>System.ValueTuple.EmailConfiguration.List&lt;ItemContent&gt;.</returns>
+        //public ScheduleViewModel GetSchedules(string schedule)
+        //{
+        //    var item = db.NewsSchedules.SingleOrDefault(s => s.Schedule == schedule);
+        //    NewsConfiguration config = NewsConfiguration.Load();
+         
+        //    EmailConfiguration email = new EmailConfiguration
+        //    {
+        //        Smtp = config.EmailConfiguration.Smtp,
+        //        Enabled = config.EmailConfiguration.Enabled,
+        //        UseSsl = config.EmailConfiguration.UseSsl
+        //    };
+
+        //    email.User.To = config.EmailConfiguration.User.To.
+        //        Where(w => w.Schedule == schedule && w.Enabled).ToList();
+
+        //    email.User.Cc = config.EmailConfiguration.User.Cc.
+        //        Where(w => w.Schedule == schedule && w.Enabled).ToList();
+
+        //    email.User.Bcc = config.EmailConfiguration.User.Bcc.
+        //        Where(w => w.Schedule == schedule && w.Enabled).ToList();
+           
+        //    var stories = db.ItemContents.
+        //        Where(w => w.CreatedDate > item.NewsStamp).ToList();
+          
+        //    return new ScheduleViewModel(email, stories);
+        //}
+
+        /// <summary>
+        /// Gets the schedules.
+        /// </summary>
+        /// <returns>System.String[].</returns>
+        //public string[] GetSchedules()
+        //{
+        //    NewsConfiguration config = NewsConfiguration.Load();
+        //    List<string> schedules = new List<string>();
+
+        //    schedules.AddRange(config.EmailConfiguration.User.To.
+        //        Where(w=> w.Enabled).Select(s => s.Schedule));
+
+        //    schedules.AddRange(config.EmailConfiguration.User.Cc.
+        //        Where(w => w.Enabled).Select(s => s.Schedule));
+
+        //    schedules.AddRange(config.EmailConfiguration.User.Bcc.
+        //        Where(w => w.Enabled).Select(s => s.Schedule));
+
+        //    return schedules.Distinct().ToArray();
+
+        //}
     }
 }

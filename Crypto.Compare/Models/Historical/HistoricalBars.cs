@@ -22,11 +22,11 @@ namespace Crypto.Compare.Models.Historical
         public IList<BarData> Bars { get; set; }
 
         [JsonProperty("TimeTo")]
-        [JsonConverter(typeof(MicrosecondEpochConverter))]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime TimeTo { get; set; }
 
         [JsonProperty("TimeFrom")]
-        [JsonConverter(typeof(MicrosecondEpochConverter))]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime TimeFrom { get; set; }
 
         [JsonProperty("FirstValueInArray")]

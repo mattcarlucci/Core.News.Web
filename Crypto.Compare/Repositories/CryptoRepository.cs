@@ -34,10 +34,8 @@ namespace Crypto.Compare.Repositories
         private JToken GetDataToken(string url)
         {
             using (WebClient web = new WebClient())
-            {
-                var json = web.DownloadString(url);
-                JObject obj = JObject.Parse(json);
-                return obj["Data"];
+            { 
+                return JObject.Parse(web.DownloadString(url))["Data"];
             }
         }
         /// <summary>
@@ -83,7 +81,7 @@ namespace Crypto.Compare.Repositories
         /// </summary>
         /// <param name="coins">The coins.</param>
         /// <returns>List&lt;SocialStats&gt;.</returns>
-        public List<SocialStats> GetSocialStats(List<CryptoCoin> coins)
+        public List<SocialStats> GetSocialStats(IEnumerable<CryptoCoin> coins)
         {
             ConcurrentBag<SocialStats> bag = new ConcurrentBag<SocialStats>();
             Parallel.ForEach(coins, coin =>         
@@ -118,13 +116,17 @@ namespace Crypto.Compare.Repositories
         /// </summary>
         /// <param name="coins">The coins.</param>
         /// <returns>List&lt;HistoricalData&gt;.</returns>
-        public (List<T>, List<string>) GetHistorical<T>(List<CryptoCoin> coins, string type) where T: HistoricalBars
+        public (List<T>, List<string>) GetHistorical<T>(IEnumerable<CryptoCoin> coins, string type, int barCount = 100) 
+            where T: HistoricalBars
         {
             ConcurrentBag<string> bad = new ConcurrentBag<string>();
             ConcurrentBag<T> bag = new ConcurrentBag<T>();
-            Parallel.ForEach(coins, coin =>
+            ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount };
+
+            Parallel.ForEach(coins, options, coin =>
             {
-                string url = string.Format("https://min-api.cryptocompare.com/data/{0}?fsym={1}&tsym=USD&limit=2000", type, coin.Symbol);
+                string url = string.Format("https://min-api.cryptocompare.com/data/{0}?fsym={1}&tsym=USD&limit={2}", 
+                    type, coin.Symbol, barCount);
                 var stat = Transform<T>(url);
                 if (stat != null && stat.Bars.Sum(s => s.High) > 0)
                 {
@@ -133,7 +135,8 @@ namespace Crypto.Compare.Repositories
                         ToList().ForEach(item => stat.Bars.Remove(item));
                     if (stat.Bars.Count() > 0) bag.Add(stat);
                 }
-                else bad.Add(coin.Symbol);                
+                else bad.Add(coin.Symbol);
+                System.Threading.Thread.Sleep(1);
             });
             return (bag.ToList(), bad.ToList());
         }

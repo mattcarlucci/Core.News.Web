@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20180321231739_News_Schedules.cs" />
+    <Compile Remove="Migrations\20180322003408_Update_ItemContent_Add_SourceUrl.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Core.News\Core.News.csproj" />
   </ItemGroup>
 

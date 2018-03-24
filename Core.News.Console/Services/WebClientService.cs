@@ -50,27 +50,30 @@ namespace Core.News
         /// The news configuration
         /// </summary>
         private readonly NewsConfiguration newsConfiguration;
-
-        /// <summary>
-        /// The email service
-        /// </summary>
-        private readonly IEmailService emailService;
-
+              
         /// <summary>
         /// Initializes a new instance of the <see cref="WebClientService"/> class.
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="configuration">The configuration.</param>
         public WebClientService(ILoggerFactory loggerFactory, IConfigurationRoot configuration, 
-            INewsRepository newsRepository, NewsConfiguration newsConfiguration, IEmailService emailService)
+            INewsRepository newsRepository, NewsConfiguration newsConfiguration)
         {
             this.configuration = configuration;           
             this.logger = loggerFactory.CreateLogger<WebClientService>();
             this.newsRepository = newsRepository;
-            this.newsConfiguration = newsConfiguration;
-            this.emailService = emailService;
+            this.newsConfiguration = newsConfiguration;            
         }
-        
+
+        /// <summary>
+        /// Starts the specified cancellation token.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        public async void Start(CancellationToken cancellationToken)
+        {
+            await StartAsync(cancellationToken);
+            System.Threading.Thread.Sleep(-1);
+        }
         /// <summary>
         /// Starts this instance.
         /// </summary>

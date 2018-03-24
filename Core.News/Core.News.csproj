@@ -5,21 +5,34 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Cron\Model\**" />
+    <Compile Remove="Cron\**" />
+    <Compile Remove="Mail\**" />
     <Compile Remove="Services\Cron\**" />
+    <Compile Remove="Services\Providers\**" />
     <Compile Remove="Services\Scheduling\**" />
-    <EmbeddedResource Remove="Cron\Model\**" />
+    <Compile Remove="ViewModels\**" />
+    <EmbeddedResource Remove="Cron\**" />
+    <EmbeddedResource Remove="Mail\**" />
     <EmbeddedResource Remove="Services\Cron\**" />
+    <EmbeddedResource Remove="Services\Providers\**" />
     <EmbeddedResource Remove="Services\Scheduling\**" />
-    <None Remove="Cron\Model\**" />
+    <EmbeddedResource Remove="ViewModels\**" />
+    <None Remove="Cron\**" />
+    <None Remove="Mail\**" />
     <None Remove="Services\Cron\**" />
+    <None Remove="Services\Providers\**" />
     <None Remove="Services\Scheduling\**" />
+    <None Remove="ViewModels\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Mail\EmailMessage.cs" />
+    <Compile Remove="Extensions\CronExpression.cs" />
+    <Compile Remove="Extensions\CronExprs.cs" />
+    <Compile Remove="Services\EmailService.cs" />
     <Compile Remove="Services\HostedService.cs" />
+    <Compile Remove="Services\IEmailService.cs" />
     <Compile Remove="Services\QuoteOfTheDayTask.cs" />
+    <Compile Remove="Services\QuoteService.cs" />
     <Compile Remove="Services\SchedulerExtensions.cs" />
     <Compile Remove="Services\SchedulerHostedServiceScope.cs" />
     <Compile Remove="Services\SomeOtherTask.cs" />
@@ -45,7 +58,6 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="Services\Scheduling\" />
   </ItemGroup>
 
 </Project>

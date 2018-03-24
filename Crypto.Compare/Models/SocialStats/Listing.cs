@@ -28,7 +28,7 @@ namespace Crypto.Compare.Models.SocialStats
         /// </summary>
         /// <value>The created at.</value>
         [JsonProperty("created_at")]
-        [JsonConverter(typeof(MicrosecondEpochConverter))]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Crypto.Compare.Models.SocialStats
         /// </summary>
         /// <value>The last update.</value>
         [JsonProperty("last_update")]
-        [JsonConverter(typeof(MicrosecondEpochConverter))]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime LastUpdate { get; set; }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Crypto.Compare.Models.SocialStats
         /// </summary>
         /// <value>The last push.</value>
         [JsonProperty("last_push")]
-        [JsonConverter(typeof(MicrosecondEpochConverter))]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime LastPush { get; set; }
 
         /// <summary>

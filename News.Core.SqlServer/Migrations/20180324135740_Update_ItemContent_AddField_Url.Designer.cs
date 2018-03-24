@@ -11,9 +11,10 @@ using System;
 namespace News.Core.SqlServer.Migrations
 {
     [DbContext(typeof(NewsDbContext))]
-    partial class NewsDbModelSnapshot : ModelSnapshot
+    [Migration("20180324135740_Update_ItemContent_AddField_Url")]
+    partial class Update_ItemContent_AddField_Url
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

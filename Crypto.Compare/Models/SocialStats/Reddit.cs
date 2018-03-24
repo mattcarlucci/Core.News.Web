@@ -77,7 +77,7 @@ namespace Crypto.Compare.Models.SocialStats
         /// </summary>
         /// <value>The community creation.</value>
         [JsonProperty("community_creation")]
-        [JsonConverter(typeof(MicrosecondEpochConverter))]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime CommunityCreation { get; set; }
 
         /// <summary>

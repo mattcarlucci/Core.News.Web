@@ -35,7 +35,7 @@ namespace Crypto.Compare.Models.SocialStats
         /// </summary>
         /// <value>The account creation.</value>
         [JsonProperty("account_creation")]
-        [JsonConverter(typeof(MicrosecondEpochConverter))]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime AccountCreation { get; set; }
 
         /// <summary>

@@ -6,7 +6,6 @@ namespace Crypto.Compare.Models.CoinInfo
 {
     public class Exchange
     {
-
         [JsonProperty("TYPE")]
         public int Type { get; set; }
 
@@ -26,7 +25,7 @@ namespace Crypto.Compare.Models.CoinInfo
         public float Price { get; set; }
 
         [JsonProperty("LASTUPDATE")]
-        [JsonConverter(typeof(MicrosecondEpochConverter))]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime LastUpdate { get; set; }
 
         [JsonProperty("LASTVOLUME")]

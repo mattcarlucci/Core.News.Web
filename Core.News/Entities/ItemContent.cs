@@ -111,5 +111,31 @@ namespace Core.News.Entities
         /// </summary>
         /// <value>The items.</value>
         public virtual List<Item> Items { get; set; }
+
+        /// <summary>
+        /// Gets or sets the source URL.
+        /// </summary>
+        /// <value>The source URL.</value>
+        [StringLength(200)]
+        public virtual string SourceUrl { get; set; }
+
+        /// <summary>
+        /// Gets the elapsed time.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        public string GetElapsedTime()
+        {
+            TimeSpan span = new TimeSpan(
+                DateTime.Now.ToUniversalTime().Ticks -
+                CreatedDate.Ticks);
+
+            int elapse = (int)span.TotalHours == 0
+                ? (int)span.TotalMinutes : (int)span.TotalHours;
+
+            string sp = (int)span.TotalHours == 0
+                ? "minutes" : "hours";
+
+            return string.Format("{0} {1} ago", elapse, sp);
+        }
     }
 }

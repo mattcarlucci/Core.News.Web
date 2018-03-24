@@ -1,4 +1,4 @@
-﻿using Core.News.Mail;
+﻿
 using Core.News.Services;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -26,7 +26,7 @@ namespace Core.News
         /// <summary>
         /// The file
         /// </summary>
-        public const string configFile = ".\\news.config.json";
+        public const string configFile = ".\\news.settings.json";
         
         /// <summary>
         /// Gets or sets the connections.
@@ -53,14 +53,7 @@ namespace Core.News
         /// Gets or sets a value indicating whether [save stories].
         /// </summary>
         /// <value><c>true</c> if [save stories]; otherwise, <c>false</c>.</value>
-        public bool SaveStories { get; set; }
-      
-        /// <summary>
-        /// Gets or sets the email.
-        /// </summary>
-        /// <value>The email.</value>
-        public EmailConfiguration EmailConfiguration { get; set; }
-
+        public bool SaveStories { get; set; }    
         /// <summary>
         /// Initializes a new instance of the <see cref="NewsConfiguration"/> class.
         /// </summary>

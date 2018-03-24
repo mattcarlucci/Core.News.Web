@@ -9,7 +9,7 @@ namespace Core.News.Tests
         [Fact]
         public void Test1()
         {
-          
+          //TODO: Define the tests.
         }
     }
 }

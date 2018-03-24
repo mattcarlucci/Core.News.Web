@@ -13,16 +13,17 @@
 // ***********************************************************************
 using AutoMapper;
 using Core.News.Services;
-using Core.News.ViewModels;
 using Core.News.Entities;
 using Crypto.Compare.Extensions;
 using Crypto.Compare.Models;
+using Crypto.Compare.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Hosting;
+using Core.News.Repositories;
 
 namespace Core.News
 {
@@ -45,14 +46,11 @@ namespace Core.News
             serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Debug);
             
             AutoMapperConfig.RegisterMappings();
-           
-            var service = serviceProvider.GetService<IHostedService>();
-            service.StartAsync(new System.Threading.CancellationToken());
 
-          //  var webClient = serviceProvider.GetService<IWebClientService>();
-          //  webClient.StartAsync(new System.Threading.CancellationToken());
-            Console.ReadLine();
-
+            var webClient = serviceProvider.GetService<IWebClientService>();
+            webClient.Start(new System.Threading.CancellationToken());
+            
+            System.Threading.Thread.Sleep(-1);
         }
     }
 
@@ -66,12 +64,12 @@ namespace Core.News
         /// Registers the mappings.
         /// </summary>
         public static void RegisterMappings()
-        {
-            var anchor = "<a href=\"{0}/\"> Read More </a>";
+        {           
             Mapper.Initialize(cfg => {
                 cfg.CreateMap<Publication, ItemContent>().
                 ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(src => src.publishedOn.FromUnixTime())).
-                ForMember(dst => dst.Content, opt => opt.MapFrom(src => src.Body + string.Format(anchor, src.Url))).
+                ForMember(dst => dst.Content, opt => opt.MapFrom(src => src.Body)).
+                ForMember(dst => dst.SourceUrl, opt => opt.MapFrom(src =>  src.Url)).
                 ForMember(dst => dst.CreatedBy, opt => opt.MapFrom(src => src.Source.Name)).
                 ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title)).
                 ForMember(dst => dst.ModifiedDate, opt => opt.MapFrom(src => src.publishedOn.FromUnixTime())).
@@ -103,6 +101,14 @@ namespace Core.News
                 ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title)).
                 ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body)).
                 ForMember(dst => dst.Url, opt => opt.MapFrom(src => src.Url));
+
+                cfg.CreateMap<ItemContent, StoryViewModel>().
+               ForMember(dst => dst.ImageUrl, opt => opt.MapFrom(src => src.SmallImage)).
+               ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.CreatedBy)).
+               ForMember(dst => dst.Elapsed, opt => opt.MapFrom(src => src.GetElapsedTime())).
+               ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title)).
+               ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Content)).
+               ForMember(dst => dst.Url, opt => opt.MapFrom(src => src.SourceUrl));
             });
         }
     }
@@ -119,7 +125,7 @@ namespace Core.News
         /// <returns>StoryViewModel.</returns>
         public static StoryViewModel StoryView(Publication publication)
         {
-            return AutoMapper.Mapper.Map<ViewModels.StoryViewModel>(publication);
+            return AutoMapper.Mapper.Map<StoryViewModel>(publication);
         }
 
         /// <summary>
@@ -130,7 +136,20 @@ namespace Core.News
         public static StoryViewModels StoryView(List<Publication> publications)
         {
             IMapper mapper = AutoMapper.Mapper.Instance;
-            var stories = mapper.Map<List<ViewModels.StoryViewModel>>(publications);
+            var stories = mapper.Map<List<StoryViewModel>>(publications);
+
+            StoryViewModels model = new StoryViewModels(stories);
+            return model;
+        }
+        /// <summary>
+        /// Stories the view.
+        /// </summary>
+        /// <param name="publications">The publications.</param>
+        /// <returns>StoryViewModels.</returns>
+        public static StoryViewModels StoryView(List<ItemContent> publications)
+        {
+            IMapper mapper = AutoMapper.Mapper.Instance;
+            var stories = mapper.Map<List<StoryViewModel>>(publications);
 
             StoryViewModels model = new StoryViewModels(stories);
             return model;

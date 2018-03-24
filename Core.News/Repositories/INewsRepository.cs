@@ -45,6 +45,13 @@ namespace Core.News.Repositories
         /// Gets the last content date.
         /// </summary>
         /// <returns>DateTime.</returns>
-        DateTime GetLastContentDate();        
+        DateTime GetLastContentDate();
+        ///// <summary>
+        ///// Gets the schedules.
+        ///// </summary>
+        ///// <param name="schedule">The schedule.</param>
+        ///// <returns>ScheduleViewModel.</returns>
+        //ScheduleViewModel GetSchedules(string schedule);
+        //string[] GetSchedules();
     }
 }

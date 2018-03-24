@@ -35,7 +35,7 @@ namespace Core.News
         /// <param name="args">The arguments.</param>
         static void Main(string[] args)
         {
-            CronExprs.Create();
+           // CronExprs.Create();
             Bootstrap.Initialize();
         }
       

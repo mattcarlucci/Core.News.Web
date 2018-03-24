@@ -20,10 +20,10 @@ using System.Text;
 namespace Core.News.Converters
 {
     /// <summary>
-    /// Class MicrosecondEpochConverter.
+    /// Class EpochConverter.
     /// </summary>
     /// <seealso cref="Newtonsoft.Json.Converters.DateTimeConverterBase" />
-    public class MicrosecondEpochConverter : DateTimeConverterBase
+    public class EpochConverter : DateTimeConverterBase
     {
         /// <summary>
         /// The epoch

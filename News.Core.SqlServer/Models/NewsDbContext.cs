@@ -44,7 +44,6 @@ namespace News.Core.SqlServer.Models
         /// </summary>
         /// <value>The item contents.</value>
         public virtual DbSet<ItemContent> ItemContents { get; set; }
-               
         /// <summary>
         /// Initializes a new instance of the <see cref="NewsDbContext"/> class.
         /// </summary>

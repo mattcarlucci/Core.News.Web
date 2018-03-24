@@ -9,6 +9,8 @@
     <Compile Remove="CoreNewsDbContext.cs" />
     <Compile Remove="Services\EmailService.cs" />
     <Compile Remove="Services\HostedService.cs" />
+    <Compile Remove="Services\NewsEmailProvider.cs" />
+    <Compile Remove="Services\NewsEmaiService.cs" />
     <Compile Remove="Services\QuoteService.cs" />
     <Compile Remove="Services\SchedulerExtensions.cs" />
     <Compile Remove="Services\SchedulerHostedService.cs" />
@@ -31,8 +33,10 @@
     <ProjectReference Include="..\News.Core.SqlServer\News.Core.SqlServer.csproj" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="copy ..\..\_PRIVATE_\news.config.json $(OutDir)" />
-  </Target>
+  <ItemGroup>
+    <None Update="news.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>

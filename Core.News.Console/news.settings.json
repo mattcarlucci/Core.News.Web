@@ -1,0 +1,17 @@
+{
+  "Interval": 60,  "_Interval is in Minutes": "",
+  "SaveStories": true,  
+  "Connection": "SqlServer",
+  "Connections": [
+    {
+      "Key": "SqlServer",
+      "Value": "Server=.\\SQLEXPRESS;Database=News;Trusted_Connection=True;ConnectRetryCount=0",
+      "Store": "News.Core.SqlServer.Models.NewsDbContext"
+    },
+      {
+      "Key": "Sqlite",
+      "Value": "data source=News.db;foreign keys=True",
+      "Store": "News.Core.Sqlite.Models.NewsDbContext"
+    }
+  ]
+}
