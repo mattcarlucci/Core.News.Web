@@ -50,17 +50,18 @@ namespace Core.News
         /// The news configuration
         /// </summary>
         private readonly NewsConfiguration newsConfiguration;
-              
         /// <summary>
         /// Initializes a new instance of the <see cref="WebClientService"/> class.
         /// </summary>
-        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="logger">The logger.</param>
         /// <param name="configuration">The configuration.</param>
-        public WebClientService(ILoggerFactory loggerFactory, IConfigurationRoot configuration, 
+        /// <param name="newsRepository">The news repository.</param>
+        /// <param name="newsConfiguration">The news configuration.</param>
+        public WebClientService(ILogger<WebClientService> logger, IConfigurationRoot configuration, 
             INewsRepository newsRepository, NewsConfiguration newsConfiguration)
         {
-            this.configuration = configuration;           
-            this.logger = loggerFactory.CreateLogger<WebClientService>();
+            this.configuration = configuration;
+            this.logger = logger;
             this.newsRepository = newsRepository;
             this.newsConfiguration = newsConfiguration;            
         }

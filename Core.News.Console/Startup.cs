@@ -76,8 +76,8 @@ namespace Core.News
                     options.UseInternalServiceProvider(provider);
                 })
                 .BuildServiceProvider(); 
-            services.AddSingleton(dbProvider);
 
+            services.AddSingleton(dbProvider);
             services.AddSingleton(config);          
         }       
     }
