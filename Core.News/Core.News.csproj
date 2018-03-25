@@ -6,19 +6,16 @@
 
   <ItemGroup>
     <Compile Remove="Cron\**" />
-    <Compile Remove="Mail\**" />
     <Compile Remove="Services\Cron\**" />
     <Compile Remove="Services\Providers\**" />
     <Compile Remove="Services\Scheduling\**" />
     <Compile Remove="ViewModels\**" />
     <EmbeddedResource Remove="Cron\**" />
-    <EmbeddedResource Remove="Mail\**" />
     <EmbeddedResource Remove="Services\Cron\**" />
     <EmbeddedResource Remove="Services\Providers\**" />
     <EmbeddedResource Remove="Services\Scheduling\**" />
     <EmbeddedResource Remove="ViewModels\**" />
     <None Remove="Cron\**" />
-    <None Remove="Mail\**" />
     <None Remove="Services\Cron\**" />
     <None Remove="Services\Providers\**" />
     <None Remove="Services\Scheduling\**" />
@@ -26,6 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Mail\EmailJob.cs" />
+    <Compile Remove="Mail\EmailRepository.cs" />
+    <Compile Remove="Mail\EmailSchedulingService.cs" />
+    <Compile Remove="Mail\IEmailRepository.cs" />
     <Compile Remove="Services\EmailService.cs" />
     <Compile Remove="Services\HostedService.cs" />
     <Compile Remove="Services\IEmailService.cs" />

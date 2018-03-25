@@ -76,9 +76,8 @@ namespace Core.News
                     sb.AppendLine(p.PadRight(32) + "\t" +
                         ExpressionDescriptor.GetDescription(p));
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(p + "\t" + ex.Message);
+                catch (Exception)
+                {                  
                     continue;
                 }
                

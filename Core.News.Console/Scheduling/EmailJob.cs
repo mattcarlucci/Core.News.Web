@@ -134,6 +134,7 @@ namespace Core.News.Console.Scheduling
             {
                 logger.LogError(1, ex, "An error occurred during execution of scheduled job");
             }
+
         }
     }
 }

@@ -181,7 +181,7 @@ namespace Crypto.Compare.Proxies
         private void TransformStories(List<Publication> stories, WebClient web)
         {           
             var providers = GetProviders(web);
-            var anchor = "<a href=\"{0}/\"> Read More </a>";
+            //var anchor = "<a href=\"{0}/\"> Read More </a>";
 
             Parallel.ForEach(stories.OrderBy(o => int.Parse(o.publishedOn)), story =>
             {               

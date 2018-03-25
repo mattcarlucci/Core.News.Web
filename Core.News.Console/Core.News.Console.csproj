@@ -6,8 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Mail\**" />
+    <EmbeddedResource Remove="Mail\**" />
+    <None Remove="Mail\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="CoreNewsDbContext.cs" />
-    <Compile Remove="Mail\EmailJob.cs" />
+    <Compile Remove="Scheduling\QuartzExtension.cs" />
+    <Compile Remove="Scheduling\QuartzJobFactory.cs" />
+    <Compile Remove="Scheduling\QuartzServicesUtilities.cs" />
     <Compile Remove="Services\EmailService.cs" />
     <Compile Remove="Services\HostedService.cs" />
     <Compile Remove="Services\NewsEmailProvider.cs" />
