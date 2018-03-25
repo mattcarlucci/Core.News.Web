@@ -11,16 +11,22 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+using Core.News.Mail;
 using Core.News.Services;
 using Crypto.Compare;
 using Crypto.Compare.Proxies;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using News.Core.SqlServer;
+using Newtonsoft.Json;
+using Quartz;
+using Quartz.Impl;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-
+using System.Threading.Tasks;
 
 namespace Core.News
 {
@@ -28,15 +34,14 @@ namespace Core.News
     /// Class Program.
     /// </summary>
     class Program
-    {
+    {      
         /// <summary>
         /// Defines the entry point of the application.
         /// </summary>
         /// <param name="args">The arguments.</param>
         static void Main(string[] args)
         {
-           // CronExprs.Create();
-            Bootstrap.Initialize();
+            Bootstrap.InitializeAsync();
         }
       
     }

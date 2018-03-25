@@ -11,6 +11,8 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+using Core.News.Console.Scheduling;
+using Core.News.Mail;
 using Core.News.Repositories;
 using Core.News.Services;
 using Crypto.Compare.Proxies;
@@ -65,8 +67,14 @@ namespace Core.News
             services.AddSingleton(Configuration);
             
             services.AddSingleton<INewsRepository, NewsRepository>();
+            services.AddSingleton<IEmailRepository, EmailRepository>();
+
             services.AddSingleton<IWebClientService, WebClientService>();
-           
+            services.AddSingleton<IEmailConfiguration, EmailConfiguration>();
+            services.AddSingleton<IEmailSchedulingService, EmailSchedulingService>();
+
+            services.UseQuartz<EmailJob>();
+
             services.AddEntityFrameworkSqlServer();
             ServiceProvider dbProvider = services.AddScoped<DbContext>(provider => 
             provider.GetService<NewsDbContext>())

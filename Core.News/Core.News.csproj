@@ -26,8 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Extensions\CronExpression.cs" />
-    <Compile Remove="Extensions\CronExprs.cs" />
     <Compile Remove="Services\EmailService.cs" />
     <Compile Remove="Services\HostedService.cs" />
     <Compile Remove="Services\IEmailService.cs" />

@@ -32,7 +32,7 @@ namespace News.Core.SqlServer
     /// Class NewsRepository.
     /// </summary>
     /// <seealso cref="Core.News.Repositories.INewsRepository" />
-    public class NewsRepository : INewsRepository
+    public class NewsRepository : INewsRepository, INewsReader
     {
         /// <summary>
         /// The database
@@ -76,7 +76,8 @@ namespace News.Core.SqlServer
             using (var scope = provider.CreateScope())
             {
                 return scope.ServiceProvider.GetService<DbContext>()
-                   .AddOrUpdate(item, w => w.CategoryId == item.CategoryId && w.ItemContentId == item.ItemContentId);              
+                   .AddOrUpdate(item, w => w.CategoryId == item.CategoryId 
+                        && w.ItemContentId == item.ItemContentId);              
             }        
         }
 
@@ -108,59 +109,19 @@ namespace News.Core.SqlServer
                    .AddOrUpdate(content, w => w.CreatedBy == content.CreatedBy && w.Title == content.Title);
             }
         }
-
         /// <summary>
-        /// Gets the schedules.
+        /// Gets the stories.
         /// </summary>
-        /// <param name="schedule">The schedule.</param>
-        /// <returns>System.ValueTuple.EmailConfiguration.List&lt;ItemContent&gt;.</returns>
-        //public ScheduleViewModel GetSchedules(string schedule)
-        //{
-        //    var item = db.NewsSchedules.SingleOrDefault(s => s.Schedule == schedule);
-        //    NewsConfiguration config = NewsConfiguration.Load();
-         
-        //    EmailConfiguration email = new EmailConfiguration
-        //    {
-        //        Smtp = config.EmailConfiguration.Smtp,
-        //        Enabled = config.EmailConfiguration.Enabled,
-        //        UseSsl = config.EmailConfiguration.UseSsl
-        //    };
-
-        //    email.User.To = config.EmailConfiguration.User.To.
-        //        Where(w => w.Schedule == schedule && w.Enabled).ToList();
-
-        //    email.User.Cc = config.EmailConfiguration.User.Cc.
-        //        Where(w => w.Schedule == schedule && w.Enabled).ToList();
-
-        //    email.User.Bcc = config.EmailConfiguration.User.Bcc.
-        //        Where(w => w.Schedule == schedule && w.Enabled).ToList();
-           
-        //    var stories = db.ItemContents.
-        //        Where(w => w.CreatedDate > item.NewsStamp).ToList();
-          
-        //    return new ScheduleViewModel(email, stories);
-        //}
-
-        /// <summary>
-        /// Gets the schedules.
-        /// </summary>
-        /// <returns>System.String[].</returns>
-        //public string[] GetSchedules()
-        //{
-        //    NewsConfiguration config = NewsConfiguration.Load();
-        //    List<string> schedules = new List<string>();
-
-        //    schedules.AddRange(config.EmailConfiguration.User.To.
-        //        Where(w=> w.Enabled).Select(s => s.Schedule));
-
-        //    schedules.AddRange(config.EmailConfiguration.User.Cc.
-        //        Where(w => w.Enabled).Select(s => s.Schedule));
-
-        //    schedules.AddRange(config.EmailConfiguration.User.Bcc.
-        //        Where(w => w.Enabled).Select(s => s.Schedule));
-
-        //    return schedules.Distinct().ToArray();
-
-        //}
+        /// <param name="offset">The offset.</param>
+        /// <returns>List&lt;ItemContent&gt;.</returns>
+        public List<ItemContent> GetStoriesByDate(DateTime offset)
+        {
+            using (var scope = provider.CreateScope())
+            {               
+                return scope.ServiceProvider.GetService<NewsDbContext>()
+                   .ItemContents.OrderByDescending(o=> o.CreatedDate).
+                    Where(w => w.CreatedDate > offset).ToList();
+            }
+        }      
     }
 }

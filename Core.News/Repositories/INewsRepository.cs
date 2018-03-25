@@ -17,10 +17,15 @@ using System.Collections.Generic;
 
 namespace Core.News.Repositories
 {
+    public interface INewsReader
+    {
+        List<ItemContent> GetStoriesByDate(DateTime offset);
+    }
+
     /// <summary>
     /// Interface INewsRepository
     /// </summary>
-    public interface INewsRepository
+    public interface INewsRepository : INewsReader
     {
         /// <summary>
         /// Adds the update category.

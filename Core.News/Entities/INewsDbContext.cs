@@ -35,7 +35,7 @@ namespace News.Core.SqlServer.Models
         /// Gets or sets the items.
         /// </summary>
         /// <value>The items.</value>
-        DbSet<Item> Items { get; set; }       
+        DbSet<Item> Items { get; set; }
         /// <summary>
         /// Saves the changes.
         /// </summary>

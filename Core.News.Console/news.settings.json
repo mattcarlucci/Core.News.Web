@@ -1,5 +1,5 @@
 {
-  "Interval": 60,  "_Interval is in Minutes": "",
+  "Interval": 0.1,  "_Interval is in Minutes": "",
   "SaveStories": true,  
   "Connection": "SqlServer",
   "Connections": [

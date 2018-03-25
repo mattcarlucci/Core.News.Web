@@ -24,6 +24,8 @@ using Crypto.Compare.Models;
 using System.Threading;
 using Core.News.Services;
 using Core.News.Repositories;
+using Microsoft.Extensions.Hosting;
+using News.Core.SqlServer;
 
 namespace Core.News
 {
@@ -32,16 +34,12 @@ namespace Core.News
     /// </summary>
     /// <seealso cref="Crypto.Compare.Proxies.NewsApiClient" />
     /// <seealso cref="Core.News.IWebClientService" />
-    public class WebClientService : NewsApiClient, IWebClientService
+    public class WebClientService : NewsApiClient, IHostedService, IWebClientService
     {        
         /// <summary>
         /// The logger
         /// </summary>
         private readonly ILogger<WebClientService> logger;
-        /// <summary>
-        /// The configuration
-        /// </summary>
-        private IConfigurationRoot configuration;
         /// <summary>
         /// The news repository
         /// </summary>
@@ -57,52 +55,33 @@ namespace Core.News
         /// <param name="configuration">The configuration.</param>
         /// <param name="newsRepository">The news repository.</param>
         /// <param name="newsConfiguration">The news configuration.</param>
-        public WebClientService(ILogger<WebClientService> logger, IConfigurationRoot configuration, 
-            INewsRepository newsRepository, NewsConfiguration newsConfiguration)
+        public WebClientService(ILogger<WebClientService> logger, INewsRepository newsRepository, 
+            NewsConfiguration newsConfiguration)
         {
-            this.configuration = configuration;
             this.logger = logger;
             this.newsRepository = newsRepository;
             this.newsConfiguration = newsConfiguration;            
-        }
-
-        /// <summary>
-        /// Starts the specified cancellation token.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        public async void Start(CancellationToken cancellationToken)
-        {
-            await StartAsync(cancellationToken);
-            System.Threading.Thread.Sleep(-1);
-        }
+        }      
         /// <summary>
         /// Starts this instance.
         /// </summary>
         /// <returns>Task.</returns>
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            while (cancellationToken.IsCancellationRequested == false)
-            {
-                if (!DateTime.TryParse(this.newsConfiguration.IntervalStart, out DateTime start)) break;
-                                
-                TimeSpan span = new TimeSpan(start.Ticks - DateTime.Now.Ticks);
-                logger.LogInformation("Waiting {0} to begin", span.Duration());
-                if (span.TotalMilliseconds <= 0) break;
-                Thread.Sleep(10000);
-            }
-
+           
             StartDate = newsRepository.GetLastContentDate().ToUnixTime();
             Task  task = Task.Factory.StartNew(() =>
             {
                 while (true)
                 {
                     RequestLatestNews();                   
-                    Thread.Sleep(newsConfiguration.Interval * 1000 * 60);
+                    Thread.Sleep((int)Math.Round(newsConfiguration.Interval * 1000 * 60, 0));
                 }
-            });         
-            await task;
+            });
+            // await task;
+            return task;
         }
-       
+
         /// <summary>
         /// Handles the <see cref="E:NewsEvent" /> event.
         /// </summary>
@@ -143,8 +122,8 @@ namespace Core.News
         {
             logger.LogInformation("Complete");
 
-            logger.LogInformation("Next Scan: {0:MM/dd/yyyy hh:mm tt}", DateTime.Now.
-                AddMinutes(newsConfiguration.Interval));
+            logger.LogInformation("Next Scan: {0}", DateTime.Now.
+                AddMinutes(newsConfiguration.Interval).ToLongTimeString());
         }
         /// <summary>
         /// Handles the <see cref="E:NewsDetailEventComplete" /> event.
@@ -171,6 +150,11 @@ namespace Core.News
                 var content = newsRepository.AddUpdateStory(category, Map.Story(e.Story));
                 newsRepository.AddUpdateItem(Map.Item(category, content));
             }
-        }        
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

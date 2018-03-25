@@ -21,9 +21,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Extensions.Hosting;
-using Core.News.Repositories;
+using System.Net.Mail;
+using Core.News.Mail;
+using System.Net;
+using System.Linq;
+using Core.News.Console.Scheduling;
+using Quartz;
 
 namespace Core.News
 {
@@ -35,7 +38,7 @@ namespace Core.News
         /// <summary>
         /// Initializes this instance.
         /// </summary>
-        public static void Initialize()
+        public static void InitializeAsync()
         {            
             IServiceCollection services = new ServiceCollection();         
 
@@ -43,13 +46,27 @@ namespace Core.News
             startup.ConfigureServices(services);
 
             IServiceProvider serviceProvider = services.BuildServiceProvider();
+
             serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Debug);
             
             AutoMapperConfig.RegisterMappings();
 
-            var webClient = serviceProvider.GetService<IWebClientService>();
-            webClient.Start(new System.Threading.CancellationToken());
-            
+            StartServices(serviceProvider);         
+        }
+
+        /// <summary>
+        /// Starts the services.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider.</param>
+        private static void StartServices(IServiceProvider serviceProvider)
+        {
+            IWebClientService webClient = serviceProvider.GetService<IWebClientService>();
+            var task = webClient.StartAsync(new System.Threading.CancellationToken());
+
+            var svc = serviceProvider.GetService<IEmailSchedulingService>();
+            svc.CreateJobs();
+
+            task.Wait();
             System.Threading.Thread.Sleep(-1);
         }
     }
@@ -103,12 +120,33 @@ namespace Core.News
                 ForMember(dst => dst.Url, opt => opt.MapFrom(src => src.Url));
 
                 cfg.CreateMap<ItemContent, StoryViewModel>().
-               ForMember(dst => dst.ImageUrl, opt => opt.MapFrom(src => src.SmallImage)).
-               ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.CreatedBy)).
-               ForMember(dst => dst.Elapsed, opt => opt.MapFrom(src => src.GetElapsedTime())).
-               ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title)).
-               ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Content)).
-               ForMember(dst => dst.Url, opt => opt.MapFrom(src => src.SourceUrl));
+                ForMember(dst => dst.ImageUrl, opt => opt.MapFrom(src => src.SmallImage)).
+                ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.CreatedBy)).
+                ForMember(dst => dst.Elapsed, opt => opt.MapFrom(src => src.GetElapsedTime())).
+                ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title)).
+                ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Content)).
+                ForMember(dst => dst.Url, opt => opt.MapFrom(src => src.SourceUrl));
+
+                cfg.CreateMap<SmtpConfiguration, SmtpClient>().
+                ForMember(dst => dst.Host, opt => opt.MapFrom(src => src.Host)).
+                ForMember(dst => dst.Port, opt => opt.MapFrom(src => src.Port)).
+                ForMember(dst => dst.Credentials, opt => opt.MapFrom(src => src.Credentials)).
+                ForMember(dst => dst.EnableSsl, opt => opt.MapFrom(src => src.EnableSsl)).              
+                ForMember(dst => dst.UseDefaultCredentials, opt => opt.MapFrom(src => src.UseDefaultCredentials));
+
+                cfg.CreateMap<EmailConfiguration, MailMessage>().
+                ForMember(dst => dst.From, opt => opt.MapFrom(src => src.From.MailAddress)).
+                  ForMember(dst => dst.IsBodyHtml, opt => opt.MapFrom(src => true)).
+                ForMember(dst => dst.SubjectEncoding, opt => opt.MapFrom(src => System.Text.Encoding.UTF8));
+
+
+                cfg.CreateMap<UserConfiguration, MailMessage>().              
+                ForMember(dst => dst.To, opt => opt.MapFrom(src => src.To.Where(w => w.Enabled))).
+                ForMember(dst => dst.CC, opt => opt.MapFrom(src => src.Cc.Where(w => w.Enabled))).
+                ForMember(dst => dst.Bcc, opt => opt.MapFrom(src => src.Bcc.Where(w => w.Enabled))).
+                ForMember(dst => dst.IsBodyHtml, opt => opt.MapFrom(src => true)).
+                ForMember(dst => dst.SubjectEncoding, opt => opt.MapFrom(src => System.Text.Encoding.UTF8));
+
             });
         }
     }
@@ -118,6 +156,80 @@ namespace Core.News
     /// </summary>
     public static class Map
     {
+        /// <summary>
+        /// Maps the SMTP client.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <returns>SmtpClient.</returns>
+        public static SmtpClient MapSmtpClient(SmtpConfiguration config)
+        {
+            return AutoMapper.Mapper.Map<SmtpClient>(config);
+        }
+        /// <summary>
+        /// Maps the mail address.
+        /// </summary>
+        /// <param name="address">The address.</param>
+        /// <returns>MailAddress.</returns>
+        public static MailAddress MapMailAddress(EmailAddress address)
+        {
+            return AutoMapper.Mapper.Map<MailAddress>(address);
+        }
+        /// <summary>
+        /// Maps to address.
+        /// </summary>
+        /// <param name="addresses">The addresses.</param>
+        /// <returns>MailAddressCollection.</returns>
+        public static MailAddressCollection MapToAddress(List<EmailAddress> addresses)
+        { 
+            return AutoMapper.Mapper.Map<MailAddressCollection>(addresses);
+        }
+
+        /// <summary>
+        /// Maps the address.
+        /// </summary>
+        /// <param name="to">To.</param>
+        /// <param name="cc">The cc.</param>
+        /// <param name="bcc">The BCC.</param>
+        /// <returns>System.ValueTuple.MailAddressCollection.MailAddressCollection.MailAddressCollection.</returns>
+        public static (MailAddressCollection To, MailAddressCollection Cc, MailAddressCollection Bcc) 
+            MapAddresses(MailMessage message, List<EmailAddress> to, List<EmailAddress> cc, List<EmailAddress> bcc)
+        {
+            // message.To = MapToAddress(to);
+            var _to = MapToAddress(to);
+            var _cc = MapToAddress(cc);
+            var _bc = MapToAddress(bcc);
+            return (_to, _cc, _bc);
+
+        }
+        /// <summary>
+        /// Maps the mail configuration.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <returns>MailMessage.</returns>
+        public static MailMessage MapMailConfiguration(IEmailConfiguration config, Func<EmailAddress, bool> predicate)
+        {
+            var mail = AutoMapper.Mapper.Map<MailMessage>(config);
+            mail.To.AddRange(config.Users.To.Where(predicate));
+            mail.CC.AddRange(config.Users.Cc.Where(predicate));
+            mail.Bcc.AddRange(config.Users.Bcc.Where(predicate));
+         
+            return mail;
+        }
+        /// <summary>
+        /// Maps the recipients.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <param name="">The .</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns>System.Net.Mail.MailMessage.</returns>
+        public static MailMessage MapRecipients(UserConfiguration config, Func<EmailAddress, bool> predicate)
+        {
+            var mail = AutoMapper.Mapper.Map<MailMessage>(config);
+            mail.To.AddRange(config.To.Where(predicate));
+            mail.CC.AddRange(config.To.Where(predicate));
+            mail.Bcc.AddRange(config.To.Where(predicate));
+            return mail;
+        }
         /// <summary>
         /// Maps the story view.
         /// </summary>

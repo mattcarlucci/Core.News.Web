@@ -70,7 +70,9 @@ namespace Crypto.Compare.ViewModels
             html += "<br><br>";
             html += "<a href =\"{5}\"><font color=\"green\"><b>{3}</b></font></a>";
             html += "<br><br>";
-            html += "{4} <a href =\"{5}\"> Read More</a>";
+            html += "{4}";
+            if (!Body.Contains("> Read More"))
+            html += "<a href =\"{5}\"> Read More </a>";
             html += "<br>";
             html += "<hr width =\"100%\">";
             return string.Format(html, ImageUrl, Name, Elapsed, Title, Body, Url);

@@ -16,23 +16,6 @@ using System.Threading.Tasks;
 
 namespace Core.News.Services
 {
-    /// <summary>
-    /// Interface IWebClientService
-    /// </summary>
-    public interface IWebClientService 
-    {
-        //  Task Start();
-        /// <summary>
-        /// Starts the asynchronous.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Task.</returns>
-        Task StartAsync(CancellationToken cancellationToken);
-        /// <summary>
-        /// Starts the specified cancellation.
-        /// </summary>
-        /// <param name="cancellation">The cancellation.</param>
-        void Start(CancellationToken cancellation);
-    }
+   
 
 }

@@ -186,7 +186,7 @@ namespace Crypto.Compare.Proxies
             Parallel.ForEach(stories.OrderBy(o => int.Parse(o.publishedOn)), story =>
             {               
                 story.Title = story.Title.Ascii();
-                story.Body = story.Body.Ascii() + string.Format(anchor, story.Url);
+                story.Body = story.Body.Ascii();// + string.Format(anchor, story.Url);
                 story.Provider = providers.SingleOrDefault(s => s.Name == story.Source.Name);                
             });
         }      

@@ -43,7 +43,7 @@ namespace Core.News
         /// Gets or sets the interval.
         /// </summary>
         /// <value>The interval.</value>
-        public int Interval { get; set; }
+        public double Interval { get; set; }
         /// <summary>
         /// Gets or sets the interval start.
         /// </summary>
