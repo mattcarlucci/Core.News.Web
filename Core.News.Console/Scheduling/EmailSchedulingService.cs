@@ -52,6 +52,7 @@ namespace Core.News.Services
             this.emailRepository = emailRepository;
             this.newsRepository = newsRepository;
             this.scheduler = scheduler;
+            QuartzServicesUtilities.StartJob<PerfJob>(scheduler, new System.TimeSpan(1, 0, 0));            
         }
 
         /// <summary>

@@ -25,8 +25,6 @@ using System.Net.Mail;
 using Core.News.Mail;
 using System.Net;
 using System.Linq;
-using Core.News.Console.Scheduling;
-using Quartz;
 
 namespace Core.News
 {
@@ -47,7 +45,8 @@ namespace Core.News
 
             IServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Debug);
+            var loggerFactory = serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Debug);        
+            loggerFactory.AddFile("Logs/Core.News.Console-{Date}.log");
             
             AutoMapperConfig.RegisterMappings();
 
@@ -65,6 +64,7 @@ namespace Core.News
 
             var svc = serviceProvider.GetService<IEmailSchedulingService>();
             svc.CreateJobs();
+
 
             task.Wait();
             System.Threading.Thread.Sleep(-1);

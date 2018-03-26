@@ -11,6 +11,7 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -46,17 +47,22 @@ namespace Core.News.Mail
         /// Loads this instance.
         /// </summary>
         /// <returns>EmailConfiguration.</returns>
-        public static EmailConfiguration Load()
+        public static EmailConfiguration Load(ILoggerFactory loggerFactory)
         {
-              lock (syncLock)
+            EmailConfiguration emailConfiguration = null;
+          
+            lock (syncLock)
+            {
+                if (File.Exists(ConfigFile) == false)
                 {
-                    // if (File.Exists(configFile) == false) return null;
-                    var path = Path.GetDirectoryName(Assembly.GetAssembly(typeof(EmailConfiguration)).Location);
-                    var json = ReadFile(); // File.ReadAllText(path + "\\" + ConfigFile);
-                    var config = JsonConvert.DeserializeObject<EmailConfiguration>(json);
-
-                    return config;
-                }            
+                    throw new FileNotFoundException(ConfigFile);
+                }
+                var path = Path.GetDirectoryName(Assembly.GetAssembly(typeof(EmailConfiguration)).Location);
+                var json = ReadFile(); // File.ReadAllText(path + "\\" + ConfigFile);
+                emailConfiguration = JsonConvert.DeserializeObject<EmailConfiguration>(json);                   
+            }
+          
+            return emailConfiguration;
         }
 
         /// <summary>

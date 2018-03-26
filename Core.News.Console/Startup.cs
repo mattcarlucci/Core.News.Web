@@ -15,7 +15,6 @@ using Core.News.Console.Scheduling;
 using Core.News.Mail;
 using Core.News.Repositories;
 using Core.News.Services;
-using Crypto.Compare.Proxies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,8 +22,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using News.Core.SqlServer;
 using News.Core.SqlServer.Models;
-using System;
-using System.Security.Cryptography;
+
 
 namespace Core.News
 {
@@ -73,7 +71,7 @@ namespace Core.News
             services.AddSingleton<IEmailConfiguration, EmailConfiguration>();
             services.AddSingleton<IEmailSchedulingService, EmailSchedulingService>();
 
-            services.UseQuartz<EmailJob>();
+            services.UseQuartz(typeof(EmailJob), typeof(PerfJob));
 
             services.AddEntityFrameworkSqlServer();
             ServiceProvider dbProvider = services.AddScoped<DbContext>(provider => 
@@ -86,7 +84,8 @@ namespace Core.News
                 .BuildServiceProvider(); 
 
             services.AddSingleton(dbProvider);
-            services.AddSingleton(config);          
+            services.AddSingleton(config);
+            
         }       
     }
 }

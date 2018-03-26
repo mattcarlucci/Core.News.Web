@@ -11,6 +11,7 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,9 @@ namespace Core.News.Mail
     /// </summary>
     /// <seealso cref="Crypto.Compare.Configs.IEmailConfiguration" />
     public class EmailConfiguration : IEmailConfiguration
-    {  
+    {
+        private readonly ILoggerFactory loggerFactory;
+
         /// <summary>
         /// Gets or sets the SMTP.
         /// </summary>
@@ -49,11 +52,16 @@ namespace Core.News.Mail
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailConfiguration"/> class.
         /// </summary>
-        public EmailConfiguration()
+        private EmailConfiguration()
         {
             Users = new UserConfiguration();
             Smtp = new SmtpConfiguration();
             From = new EmailAddress();          
+        }
+
+        public EmailConfiguration(ILoggerFactory loggerFactory) : this()
+        {
+            this.loggerFactory = loggerFactory;
         }
 
         /// <summary>
@@ -106,7 +114,7 @@ namespace Core.News.Mail
         /// <returns>EmailConfiguration.</returns>
         public EmailConfiguration Load()
         {
-            return EmailConfigContext.Load();
+            return EmailConfigContext.Load(loggerFactory);
         }     
     }
 }
