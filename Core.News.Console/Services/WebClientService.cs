@@ -35,7 +35,12 @@ namespace Core.News
     /// <seealso cref="Crypto.Compare.Proxies.NewsApiClient" />
     /// <seealso cref="Core.News.IWebClientService" />
     public class WebClientService : NewsApiClient, IHostedService, IWebClientService
-    {        
+    {
+
+        /// <summary>
+        /// The cancellation token
+        /// </summary>
+        CancellationToken cancellationToken;
         /// <summary>
         /// The logger
         /// </summary>
@@ -68,18 +73,18 @@ namespace Core.News
         /// <returns>Task.</returns>
         public Task StartAsync(CancellationToken cancellationToken)
         {
-           
+            //TODO: replace this with Quartz Job
+            this.cancellationToken = cancellationToken;
             StartDate = newsRepository.GetLastContentDate().ToUnixTime();
             Task  task = Task.Factory.StartNew(() =>
             {
-                while (true)
+                while (!cancellationToken.IsCancellationRequested)
                 {
                     RequestLatestNews();                   
                     Thread.Sleep((int)Math.Round(newsConfiguration.Interval * 1000 * 60, 0));
                 }
             });
-            // await task;
-            return task;
+            return task;       
         }
 
         /// <summary>
@@ -151,10 +156,28 @@ namespace Core.News
                 newsRepository.AddUpdateItem(Map.Item(category, content));
             }
         }
+        /// <summary>
+        /// Handles the <see cref="E:Exception" /> event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="T:System.UnhandledExceptionEventArgs" /> instance containing the event data.</param>
+        protected override void OnException(object sender, UnhandledExceptionEventArgs e)
+        {
+            logger.LogError(e.ExceptionObject as Exception, "WebClientApi returned with an exception");
 
+          //  e = errorCounter++ == 10 ? e = new UnhandledExceptionEventArgs(e.ExceptionObject, true) : e;
+            base.OnException(sender, e);
+        }
+        /// <summary>
+        /// Triggered when the application host is performing a graceful shutdown.
+        /// </summary>
+        /// <param name="cancellationToken">Indicates that the shutdown process should no longer be graceful.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            this.cancellationToken = cancellationToken;
+            return Task.FromResult(0);
         }
     }
 }

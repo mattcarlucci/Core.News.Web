@@ -3,5 +3,6 @@
     public interface IEmailSchedulingService
     {
         void CreateJobs();
+        void Shutdown();
     }
 }

@@ -121,8 +121,34 @@ namespace Crypto.Compare.Proxies
         /// <returns>List&lt;Models.Provider&gt;.</returns>
         private List<Models.Provider> GetProviders(WebClient web)
         {
-            var json = web.DownloadString(providerUrl);
-            return JsonConvert.DeserializeObject<List<Models.Provider>>(json);
+            try
+            {
+                var json = web.DownloadString(providerUrl);
+                return JsonConvert.DeserializeObject<List<Models.Provider>>(json);
+            }
+            catch(WebException ex)
+            {
+                OnException(ex, new UnhandledExceptionEventArgs(ex, false));
+                return new List<Provider>();
+            }
+        }
+        /// <summary>
+        /// Gets the stories.
+        /// </summary>
+        /// <param name="web">The web.</param>
+        /// <returns>System.String.</returns>
+        private List<Publication> GetStories(WebClient web)
+        {
+            try
+            {
+                var json = web.DownloadString(newsUrl);
+                return JsonConvert.DeserializeObject<List<Publication>>(json);
+            }
+            catch (Exception ex)
+            {
+                OnException(ex, new UnhandledExceptionEventArgs(ex, false));
+                return new List<Publication>();
+            }
         }
 
         /// <summary>
@@ -130,12 +156,10 @@ namespace Crypto.Compare.Proxies
         /// </summary>
         /// <param name="web">The web.</param>
         /// <returns>List&lt;Models.Publication&gt;.</returns>
-        private List<Models.Publication> GetStories(WebClient web, Func<Publication, bool> filter)
+        private List<Publication> GetStories(WebClient web, Func<Publication, bool> filter)
         {
-            var json = web.DownloadString(newsUrl);
-            var stories = JsonConvert.DeserializeObject<List<Publication>>(json).
-                Where(w => filter(w)).ToList();
-
+            var stories = GetStories(web).Where(filter).ToList();
+           
             TransformStories(stories, web);
 
             stories.ForEach(item => OnNewsSummary(this, NewsSummaryEventArgs.Create(item, watch)));
@@ -179,9 +203,16 @@ namespace Crypto.Compare.Proxies
         /// <param name="stories">The stories.</param>
         /// <param name="web">The web.</param>
         private void TransformStories(List<Publication> stories, WebClient web)
-        {           
+        {
+            if (stories.Count == 0) return;
+
             var providers = GetProviders(web);
             //var anchor = "<a href=\"{0}/\"> Read More </a>";
+            if (providers.Count == 0)
+            {
+                stories.Clear();
+                return;
+            }
 
             Parallel.ForEach(stories.OrderBy(o => int.Parse(o.publishedOn)), story =>
             {               

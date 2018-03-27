@@ -10,5 +10,6 @@ namespace Crypto.Compare.Proxies
         EventHandler<StopWatchEventArgs> NewsStart { get; set; }
         EventHandler<NewsSummaryEventArgs> NewsSummary { get; set; }
         EventHandler<NewsCompleteEventArgs> NewsSummaryComplete { get; set; }
+        UnhandledExceptionEventHandler Exception { get; set; }
     }
 }

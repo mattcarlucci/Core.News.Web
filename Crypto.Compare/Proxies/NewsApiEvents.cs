@@ -58,6 +58,21 @@ namespace Crypto.Compare.Proxies
 
 
         /// <summary>
+        /// Gets or sets the exception.
+        /// </summary>
+        /// <value>The exception.</value>
+        public UnhandledExceptionEventHandler Exception { get;set; }
+
+        /// <summary>
+        /// Handles the <see cref="E:Exception" /> event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="UnhandledExceptionEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception?.Invoke(sender, e);
+        }
+        /// <summary>
         /// Handles the <see cref="E:NewsEventComplete" /> event.
         /// </summary>
         /// <param name="sender">The sender.</param>
@@ -118,7 +133,7 @@ namespace Crypto.Compare.Proxies
         {
             NewsComplete?.Invoke(sender, e);
         }
-      
+       
 
     }
 }

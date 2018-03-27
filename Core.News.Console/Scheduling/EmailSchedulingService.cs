@@ -52,7 +52,7 @@ namespace Core.News.Services
             this.emailRepository = emailRepository;
             this.newsRepository = newsRepository;
             this.scheduler = scheduler;
-            QuartzServicesUtilities.StartJob<PerfJob>(scheduler, new System.TimeSpan(1, 0, 0));            
+            QuartzServicesUtilities.StartJob<PerfJob>(scheduler, new System.TimeSpan(0, 0, 30));            
         }
 
         /// <summary>
@@ -79,6 +79,14 @@ namespace Core.News.Services
 
                 scheduler.ScheduleJob(job, trigger);               
             }); 
-        }     
+        }
+
+        /// <summary>
+        /// Destroys the jobs.
+        /// </summary>
+        public void Shutdown()
+        {
+            scheduler.Shutdown();
+        }
     }
 }

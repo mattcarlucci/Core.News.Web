@@ -25,6 +25,8 @@ using System.Net.Mail;
 using Core.News.Mail;
 using System.Net;
 using System.Linq;
+using Serilog;
+using Core.News.Console.Scheduling;
 
 namespace Core.News
 {
@@ -45,9 +47,14 @@ namespace Core.News
 
             IServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            var loggerFactory = serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Debug);        
+            var loggerFactory = serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Trace);
             loggerFactory.AddFile("Logs/Core.News.Console-{Date}.log");
-            
+
+            Log.Logger = new LoggerConfiguration()
+         //    WriteTo.Console().
+            .WriteTo.RollingFile("Logs/trace.log", Serilog.Events.LogEventLevel.Verbose).CreateLogger();
+          
+
             AutoMapperConfig.RegisterMappings();
 
             StartServices(serviceProvider);         
@@ -59,15 +66,28 @@ namespace Core.News
         /// <param name="serviceProvider">The service provider.</param>
         private static void StartServices(IServiceProvider serviceProvider)
         {
-            IWebClientService webClient = serviceProvider.GetService<IWebClientService>();
-            var task = webClient.StartAsync(new System.Threading.CancellationToken());
+            var logger = serviceProvider.GetService<ILogger<Program>>();
+            var svc = serviceProvider.GetService<IEmailSchedulingService>();               
+          
+            logger.LogDebug(PerfJob.GetProcessInfo());
 
-            var svc = serviceProvider.GetService<IEmailSchedulingService>();
-            svc.CreateJobs();
+            try
+            {
+                IWebClientService webClient = serviceProvider.GetService<IWebClientService>();
+                var task = webClient.StartAsync(new System.Threading.CancellationToken());
 
+                svc.CreateJobs();
 
-            task.Wait();
-            System.Threading.Thread.Sleep(-1);
+                task.Wait();
+                //System.Threading.Thread.Sleep(-1);
+            }
+            catch(Exception ex)
+            {
+               svc.Shutdown();
+               logger.LogCritical(ex, ex.Message);
+               logger.LogDebug(PerfJob.GetProcessInfo());
+               System.Threading.Thread.Sleep(-1);
+            }
         }
     }
 

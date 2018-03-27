@@ -47,7 +47,6 @@ namespace Core.News
                 ForEach(item => pairs.Add(item.Name, item.GetValue(item).ToString()));
 
             return pairs;
-
         }
         /// <summary>
         /// Gets the description.
