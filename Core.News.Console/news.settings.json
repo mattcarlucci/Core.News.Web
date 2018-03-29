@@ -1,14 +1,20 @@
 {
   "Interval": 0.5,  "_Interval is in Minutes": "",
   "SaveStories": true,  
-  "Connection": "SqlServer",
+  "Connection": "SqlExpress",
   "Connections": [
     {
-      "Key": "SqlServer",
+      "Key": "SqlExpress",
       "Value": "Server=.\\SQLEXPRESS;Database=News;Trusted_Connection=True;ConnectRetryCount=0",
       "Store": "News.Core.SqlServer.Models.NewsDbContext"
     },
-      {
+    {
+      "Key": "SqlServer",
+      "Value": "Server=localhost;Database=News;Trusted_Connection=True;ConnectRetryCount=0",
+      "Store": "News.Core.SqlServer.Models.NewsDbContext"
+    },
+    {
+      "Note": "Currently not supported",
       "Key": "Sqlite",
       "Value": "data source=News.db;foreign keys=True",
       "Store": "News.Core.Sqlite.Models.NewsDbContext"

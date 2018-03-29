@@ -59,13 +59,14 @@ namespace Core.News.Mail
                         throw new FileNotFoundException(ConfigFile);
                     }
                     var path = Path.GetDirectoryName(Assembly.GetAssembly(typeof(EmailConfiguration)).Location);
-                    var json = ReadFile(); // File.ReadAllText(path + "\\" + ConfigFile);
+                    var json = ReadFile(); 
                     emailConfiguration = JsonConvert.DeserializeObject<EmailConfiguration>(json);
                 }
             }catch(Exception ex)
-            {               
+            {
+                System.Console.Beep();
                 loggerFactory.CreateLogger<EmailConfiguration>().
-                    LogError(ex, "Email services will be disabled");              
+                    LogError(ex.Message, "Email services will be disabled");              
             }          
             return emailConfiguration;
         }

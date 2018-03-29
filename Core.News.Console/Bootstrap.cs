@@ -78,8 +78,7 @@ namespace Core.News
 
                 svc.CreateJobs();
 
-                task.Wait();
-                //System.Threading.Thread.Sleep(-1);
+                task.Wait();               
             }
             catch(Exception ex)
             {
