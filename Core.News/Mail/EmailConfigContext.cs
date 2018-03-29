@@ -50,18 +50,23 @@ namespace Core.News.Mail
         public static EmailConfiguration Load(ILoggerFactory loggerFactory)
         {
             EmailConfiguration emailConfiguration = null;
-          
-            lock (syncLock)
+            try
             {
-                if (File.Exists(ConfigFile) == false)
+                lock (syncLock)
                 {
-                    throw new FileNotFoundException(ConfigFile);
+                    if (File.Exists(ConfigFile) == false)
+                    {
+                        throw new FileNotFoundException(ConfigFile);
+                    }
+                    var path = Path.GetDirectoryName(Assembly.GetAssembly(typeof(EmailConfiguration)).Location);
+                    var json = ReadFile(); // File.ReadAllText(path + "\\" + ConfigFile);
+                    emailConfiguration = JsonConvert.DeserializeObject<EmailConfiguration>(json);
                 }
-                var path = Path.GetDirectoryName(Assembly.GetAssembly(typeof(EmailConfiguration)).Location);
-                var json = ReadFile(); // File.ReadAllText(path + "\\" + ConfigFile);
-                emailConfiguration = JsonConvert.DeserializeObject<EmailConfiguration>(json);                   
-            }
-          
+            }catch(Exception ex)
+            {               
+                loggerFactory.CreateLogger<EmailConfiguration>().
+                    LogError(ex, "Email services will be disabled");              
+            }          
             return emailConfiguration;
         }
 

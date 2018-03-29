@@ -35,7 +35,7 @@ namespace Core.News.Services
         private readonly ILogger<EmailSchedulingService> logger;
         private readonly IEmailRepository emailRepository;
         private readonly INewsRepository newsRepository;
-
+    
         /// <summary>
         /// The scheduler
         /// </summary>
@@ -62,6 +62,8 @@ namespace Core.News.Services
         /// <returns>Task.</returns>
         public void CreateJobs()
         {
+            if (emailRepository.Enabled == false) return;
+
             Dictionary<string, string> Keys = CronExprs.GetPairs();
                 
             emailRepository.GetSchedules().Select(s => s.Key).ToList().ForEach(item =>

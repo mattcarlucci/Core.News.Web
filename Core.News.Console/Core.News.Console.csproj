@@ -46,6 +46,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Cron Schedule Helper.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="news.settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

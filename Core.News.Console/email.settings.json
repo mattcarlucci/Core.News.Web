@@ -1,0 +1,40 @@
+{
+  "Smtp": {
+    "Host": "enter your smtp host",
+    "UserName": "enter user name",
+    "Password": "password",
+    "Port": 26,
+    "UseDefaultCredentials": false,
+    "EnableSsl": true
+  },
+  "Enabled": false,
+  "Users": {
+    "To": [
+      {
+        "DisplayName": "Display Name",
+        "Address": "user1@domain.com",
+        "Enabled": true,
+        "Schedule": "every_day_at_06am",
+        "For_Schedule_Help_Goto": "https://www.freeformatter.com/cron-expression-generator-quartz.html",
+        "OrSeeFile": "Cron Schedule Helper.md",
+        "LastSent": "2018-03-27T10:58:25.8468244Z"
+      },
+      {
+        "DisplayName": "Display Name",
+        "Address": "user2@comain.com",
+        "Enabled": false,
+        "Schedule": "every_day_at_06am",
+        "LastSent": "2018-03-27T10:58:25.8468251Z"
+      }
+    ],
+    "Cc": [],
+    "Bcc": []
+  },
+  "From": {
+    "DisplayName": "Crypto News",
+    "Address": "from@domain.com",
+    "Enabled": false,
+    "Schedule": "",
+    "LastSent": "0001-01-01T00:00:00"
+  }
+}

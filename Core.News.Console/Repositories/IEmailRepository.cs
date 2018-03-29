@@ -14,5 +14,6 @@ namespace Core.News.Services
         StoryViewModels GetStories(DateTime startDate);
         UserConfiguration GetUsers(string schedule);
         void SaveChanges();
+        bool Enabled { get; }
     }
 }
