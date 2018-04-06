@@ -112,14 +112,14 @@ namespace Core.News.Console.Scheduling
                     var userList = emailRepository.GetUsers(group);
                     var config = emailRepository.CloneConfiguration(group);
 
-                    var mail = Map.MapMailConfiguration(config, w => w.Enabled);
+                    var mail = Map.MailConfiguration(config, w => w.Enabled);
                     mail.Body = Map.StoryView(stories).MailMessage();
                     mail.Subject = "Crypto News Alert";
                                        
                     logger.LogInformation("Executing job {0} - Last Scan: {1} - Users: {2} - Stories: {3}",
                         CronExprs.GetDescription(context.JobDetail.Key.Name), offset, users.Count, stories.Count);
 
-                    using (SmtpClient client = Map.MapSmtpClient(config.Smtp))
+                    using (SmtpClient client = Map.SmtpClient(config.Smtp))
                     {
                         logger.LogInformation("Emailing {0} stories {1}", stories.Count, userList);                       
                         client.Send(mail);                      

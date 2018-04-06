@@ -27,7 +27,7 @@ using System.Net;
 using System.Linq;
 using Serilog;
 using Core.News.Console.Scheduling;
-using Microsoft.AspNetCore.DataProtection;
+//using Microsoft.AspNetCore.DataProtection;
 
 namespace Core.News
 {
@@ -47,7 +47,7 @@ namespace Core.News
             startup.ConfigureServices(services);                       
 
             IServiceProvider serviceProvider = services.BuildServiceProvider();
-            IDataProtectionProvider protectionProvider = serviceProvider.GetService<IDataProtectionProvider>();
+            //IDataProtectionProvider protectionProvider = serviceProvider.GetService<IDataProtectionProvider>();
 
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Trace);
             loggerFactory.AddFile("Logs/Core.News.Console-{Date}.log");
@@ -55,7 +55,7 @@ namespace Core.News
             Log.Logger = new LoggerConfiguration()      
             .WriteTo.RollingFile("Logs/trace.log", Serilog.Events.LogEventLevel.Verbose).CreateLogger();
           
-            AutoMapperConfig.RegisterMappings(protectionProvider);
+            AutoMapperConfig.RegisterMappings();
             StartServices(serviceProvider);         
         }
 
@@ -95,11 +95,6 @@ namespace Core.News
     /// </summary>
     public static class AutoMapperConfig
     {
-        /// <summary>
-        /// The protector
-        /// </summary>
-        internal static IDataProtector _protector;
-        
         /// <summary>
         /// Registers the mappings.
         /// </summary>
@@ -151,7 +146,7 @@ namespace Core.News
                 ForMember(dst => dst.Url, opt => opt.MapFrom(src => src.SourceUrl));
 
                 cfg.CreateMap<SmtpConfiguration, SmtpClient>().
-                ForMember(dst => dst.Host, opt => opt.MapFrom(src => _protector.Unprotect(src.Host))).
+                ForMember(dst => dst.Host, opt => opt.MapFrom(src => src.Host)).
                 ForMember(dst => dst.Port, opt => opt.MapFrom(src => src.Port)).
                 ForMember(dst => dst.Credentials, opt => opt.MapFrom(src => src.Credentials)).
                 ForMember(dst => dst.EnableSsl, opt => opt.MapFrom(src => src.EnableSsl)).              
@@ -171,16 +166,6 @@ namespace Core.News
                 ForMember(dst => dst.SubjectEncoding, opt => opt.MapFrom(src => System.Text.Encoding.UTF8));
 
             });
-        }
-
-        /// <summary>
-        /// Registers the mappings.
-        /// </summary>
-        /// <param name="protectionProvider">The protection provider.</param>
-        internal static void RegisterMappings(IDataProtectionProvider protectionProvider)
-        {
-            _protector = protectionProvider.CreateProtector(typeof(EmailConfiguration).FullName);            
-            RegisterMappings();
         }
     }
 
