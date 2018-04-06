@@ -19,7 +19,7 @@ namespace Core.News.Cryptography
     /// Class CipherKeyProvider.
     /// </summary>
     /// <seealso cref="Core.News.Cryptography.ICipherKeyProvider" />
-    public class CipherKeyProvider : ICipherKeyProvider
+    public class EmailKeyProvider : ICipherKeyProvider
     {
         /// <summary>
         /// The key
