@@ -27,6 +27,8 @@ using Quartz;
 using Quartz.Impl;
 using News.Core.SqlServer;
 using Core.News.Console.Scheduling;
+using Microsoft.AspNetCore.DataProtection;
+using System.IO;
 
 namespace Core.News.Services
 {
@@ -35,12 +37,12 @@ namespace Core.News.Services
         private readonly ILogger<EmailSchedulingService> logger;
         private readonly IEmailRepository emailRepository;
         private readonly INewsRepository newsRepository;
-    
+
         /// <summary>
         /// The scheduler
         /// </summary>
-        IScheduler scheduler;
-       // <summary>
+        private readonly IScheduler scheduler;
+        /// <summary>
         /// Initializes a new instance of the <see cref="EmailSchedulingService"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
@@ -52,6 +54,7 @@ namespace Core.News.Services
             this.emailRepository = emailRepository;
             this.newsRepository = newsRepository;
             this.scheduler = scheduler;
+
             QuartzServicesUtilities.StartJob<PerfJob>(scheduler, new System.TimeSpan(0, 0, 30));            
         }
 
@@ -78,7 +81,7 @@ namespace Core.News.Services
                 var trigger = TriggerBuilder.Create()
                     .WithIdentity(expr, item).WithCronSchedule(expr)
                     .ForJob(expr, item).Build();
-
+                           
                 scheduler.ScheduleJob(job, trigger);               
             }); 
         }

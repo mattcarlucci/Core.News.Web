@@ -65,16 +65,16 @@ namespace Crypto.Compare.ViewModels
         {
             // var anchor = "<a href=\"{0}/\"> Read More </a>";
 
-            string html = "<img src=\"{0}\" alt=\"\" height=\"16\" width=\"16\">";
+            string html = "<img src=\"{0}\" alt=\"\" height=\"16\" width=\"16\"/>";
             html += "<font color=\"#ebad02\"> {1}</font> - <font color=\"#dedbd5\">{2}</font>";
-            html += "<br><br>";
+            html += "<br></br> <br></br>";
             html += "<a href =\"{5}\"><font color=\"green\"><b>{3}</b></font></a>";
-            html += "<br><br>";
+            html += "<br></br> <br></br>";
             html += "{4}";
             if (!Body.Contains("> Read More"))
-            html += "<a href =\"{5}\"> Read More </a>";
-            html += "<br>";
-            html += "<hr width =\"100%\">";
+            html += "<a href =\"{5}\">Read More</a>";
+            html += "<br></br> <br></br>";
+            html += "<hr width =\"100%\"/>";
             return string.Format(html, ImageUrl, Name, Elapsed, Title, Body, Url);
 
         }

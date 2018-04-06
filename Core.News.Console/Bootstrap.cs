@@ -27,6 +27,7 @@ using System.Net;
 using System.Linq;
 using Serilog;
 using Core.News.Console.Scheduling;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace Core.News
 {
@@ -43,20 +44,18 @@ namespace Core.News
             IServiceCollection services = new ServiceCollection();         
 
             Startup startup = new Startup();
-            startup.ConfigureServices(services);
+            startup.ConfigureServices(services);                       
 
             IServiceProvider serviceProvider = services.BuildServiceProvider();
+            IDataProtectionProvider protectionProvider = serviceProvider.GetService<IDataProtectionProvider>();
 
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Trace);
             loggerFactory.AddFile("Logs/Core.News.Console-{Date}.log");
 
-            Log.Logger = new LoggerConfiguration()
-         //    WriteTo.Console().
+            Log.Logger = new LoggerConfiguration()      
             .WriteTo.RollingFile("Logs/trace.log", Serilog.Events.LogEventLevel.Verbose).CreateLogger();
           
-
-            AutoMapperConfig.RegisterMappings();
-
+            AutoMapperConfig.RegisterMappings(protectionProvider);
             StartServices(serviceProvider);         
         }
 
@@ -96,6 +95,11 @@ namespace Core.News
     /// </summary>
     public static class AutoMapperConfig
     {
+        /// <summary>
+        /// The protector
+        /// </summary>
+        internal static IDataProtector _protector;
+        
         /// <summary>
         /// Registers the mappings.
         /// </summary>
@@ -147,7 +151,7 @@ namespace Core.News
                 ForMember(dst => dst.Url, opt => opt.MapFrom(src => src.SourceUrl));
 
                 cfg.CreateMap<SmtpConfiguration, SmtpClient>().
-                ForMember(dst => dst.Host, opt => opt.MapFrom(src => src.Host)).
+                ForMember(dst => dst.Host, opt => opt.MapFrom(src => _protector.Unprotect(src.Host))).
                 ForMember(dst => dst.Port, opt => opt.MapFrom(src => src.Port)).
                 ForMember(dst => dst.Credentials, opt => opt.MapFrom(src => src.Credentials)).
                 ForMember(dst => dst.EnableSsl, opt => opt.MapFrom(src => src.EnableSsl)).              
@@ -168,6 +172,16 @@ namespace Core.News
 
             });
         }
+
+        /// <summary>
+        /// Registers the mappings.
+        /// </summary>
+        /// <param name="protectionProvider">The protection provider.</param>
+        internal static void RegisterMappings(IDataProtectionProvider protectionProvider)
+        {
+            _protector = protectionProvider.CreateProtector(typeof(EmailConfiguration).FullName);            
+            RegisterMappings();
+        }
     }
 
     /// <summary>
@@ -180,16 +194,17 @@ namespace Core.News
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns>SmtpClient.</returns>
-        public static SmtpClient MapSmtpClient(SmtpConfiguration config)
+        public static SmtpClient SmtpClient(SmtpConfiguration config)
         {
-            return AutoMapper.Mapper.Map<SmtpClient>(config);
+            return  AutoMapper.Mapper.Map<SmtpClient>(config);
+            
         }
         /// <summary>
         /// Maps the mail address.
         /// </summary>
         /// <param name="address">The address.</param>
         /// <returns>MailAddress.</returns>
-        public static MailAddress MapMailAddress(EmailAddress address)
+        public static MailAddress MailAddress(EmailAddress address)
         {
             return AutoMapper.Mapper.Map<MailAddress>(address);
         }
@@ -198,7 +213,7 @@ namespace Core.News
         /// </summary>
         /// <param name="addresses">The addresses.</param>
         /// <returns>MailAddressCollection.</returns>
-        public static MailAddressCollection MapToAddress(List<EmailAddress> addresses)
+        public static MailAddressCollection ToAddress(List<EmailAddress> addresses)
         { 
             return AutoMapper.Mapper.Map<MailAddressCollection>(addresses);
         }
@@ -211,12 +226,12 @@ namespace Core.News
         /// <param name="bcc">The BCC.</param>
         /// <returns>System.ValueTuple.MailAddressCollection.MailAddressCollection.MailAddressCollection.</returns>
         public static (MailAddressCollection To, MailAddressCollection Cc, MailAddressCollection Bcc) 
-            MapAddresses(MailMessage message, List<EmailAddress> to, List<EmailAddress> cc, List<EmailAddress> bcc)
+            Addresses(MailMessage message, List<EmailAddress> to, List<EmailAddress> cc, List<EmailAddress> bcc)
         {
             // message.To = MapToAddress(to);
-            var _to = MapToAddress(to);
-            var _cc = MapToAddress(cc);
-            var _bc = MapToAddress(bcc);
+            var _to = ToAddress(to);
+            var _cc = ToAddress(cc);
+            var _bc = ToAddress(bcc);
             return (_to, _cc, _bc);
 
         }
@@ -225,7 +240,7 @@ namespace Core.News
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns>MailMessage.</returns>
-        public static MailMessage MapMailConfiguration(IEmailConfiguration config, Func<EmailAddress, bool> predicate)
+        public static MailMessage MailConfiguration(IEmailConfiguration config, Func<EmailAddress, bool> predicate)
         {
             var mail = AutoMapper.Mapper.Map<MailMessage>(config);
             mail.To.AddRange(config.Users.To.Where(predicate));
@@ -241,7 +256,7 @@ namespace Core.News
         /// <param name="">The .</param>
         /// <param name="predicate">The predicate.</param>
         /// <returns>System.Net.Mail.MailMessage.</returns>
-        public static MailMessage MapRecipients(UserConfiguration config, Func<EmailAddress, bool> predicate)
+        public static MailMessage Recipients(UserConfiguration config, Func<EmailAddress, bool> predicate)
         {
             var mail = AutoMapper.Mapper.Map<MailMessage>(config);
             mail.To.AddRange(config.To.Where(predicate));

@@ -22,7 +22,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using News.Core.SqlServer;
 using News.Core.SqlServer.Models;
-
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using System;
+using System.IO;
 
 namespace Core.News
 {
@@ -61,6 +66,17 @@ namespace Core.News
         /// <param name="services">The services.</param>
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddDataProtection()
+                .UseCryptographicAlgorithms(
+                    new AuthenticatedEncryptorConfiguration()
+                    {
+                        EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+                        ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+                    })
+                .PersistKeysToFileSystem(new DirectoryInfo(@".\keys"))
+                .SetDefaultKeyLifetime(TimeSpan.FromDays(365));                       
+
             services.AddLogging();
             services.AddSingleton(Configuration);
             
@@ -69,7 +85,7 @@ namespace Core.News
 
             services.AddSingleton<IWebClientService, WebClientService>();
             services.AddSingleton<IEmailConfiguration, EmailConfiguration>();
-            services.AddSingleton<IEmailSchedulingService, EmailSchedulingService>();
+            services.AddSingleton<IEmailSchedulingService, EmailSchedulingService>();            
 
             services.UseQuartz(typeof(EmailJob), typeof(PerfJob));
 
@@ -84,8 +100,7 @@ namespace Core.News
                 .BuildServiceProvider(); 
 
             services.AddSingleton(dbProvider);
-            services.AddSingleton(config);
-            
+            services.AddSingleton(config);            
         }       
     }
 }

@@ -47,7 +47,7 @@ namespace Crypto.Compare.ViewModels
         /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
-            return string.Format("{0} new {1}<br><br>", 
+            return string.Format("{0} new {1}<br></br><br></br>", 
                 StoryCount, StoryCount > 1 ? "stories" : "story");
         }
         /// <summary>
@@ -57,11 +57,11 @@ namespace Crypto.Compare.ViewModels
         public string MailMessage()
         {
             //string token = "<hr width =\"100%\"><br>";
-            return this + string.Join("<br>", Stories) +  GetImageUrls();
+            return this + string.Join("<br></br>", Stories) +  GetImageUrls();
         }
         public string GetImageUrls()
         {
-            string html = "<img src=\"{0}\" alt=\"\" height=\"100\" width=\"100\">";            
+            string html = "<img src=\"{0}\" alt=\"\" height=\"100\" width=\"100\"/>";            
             return string.Join(" ", Stories.Select(s => string.Format(html, s.ImageUrl)).Distinct());
         }
     }
