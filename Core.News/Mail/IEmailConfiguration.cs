@@ -68,5 +68,11 @@ namespace Core.News.Mail
         /// <param name="p">The p.</param>
         /// <returns>UserConfiguration.</returns>
         UserConfiguration GetUsers(Func<EmailAddress, bool> p);
+
+        /// <summary>
+        /// Gets the users.
+        /// </summary>
+        /// <returns>UserConfiguration.</returns>
+        UserConfiguration GetUsers();
     }
 }

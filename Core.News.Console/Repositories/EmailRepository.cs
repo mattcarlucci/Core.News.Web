@@ -91,6 +91,14 @@ namespace Core.News.Services
             return emailConfiguration.GetUsers(w=> w.Schedule == schedule);
         }
         /// <summary>
+        /// Gets the users.
+        /// </summary>
+        /// <returns>UserConfiguration.</returns>
+        public UserConfiguration GetUsers()
+        {
+            return emailConfiguration.GetUsers();
+        }
+        /// <summary>
         /// Saves the changes.
         /// </summary>
         public void SaveChanges()

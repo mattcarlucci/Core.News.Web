@@ -15,5 +15,7 @@ namespace Core.News.Services
         UserConfiguration GetUsers(string schedule);
         void SaveChanges();
         bool Enabled { get; }
+
+        UserConfiguration GetUsers();
     }
 }

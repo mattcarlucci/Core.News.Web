@@ -62,6 +62,5 @@ namespace Core.News.Mail
         /// </summary>
         /// <value><c>true</c> if [enable SSL]; otherwise, <c>false</c>.</value>
         public bool EnableSsl { get; set; }
-
     }
 }

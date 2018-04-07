@@ -27,6 +27,7 @@ using System.Net;
 using System.Linq;
 using Serilog;
 using Core.News.Console.Scheduling;
+using Core.News.Cryptography;
 //using Microsoft.AspNetCore.DataProtection;
 
 namespace Core.News
@@ -66,8 +67,12 @@ namespace Core.News
         private static void StartServices(IServiceProvider serviceProvider)
         {
             var logger = serviceProvider.GetService<ILogger<Program>>();
-            var svc = serviceProvider.GetService<IEmailSchedulingService>();               
-          
+            var svc = serviceProvider.GetService<IEmailSchedulingService>();
+
+            var protector = serviceProvider.GetService<ICipherService>();
+            var enc = protector.Encrypt("Hi There!");
+            var dec = protector.Decrypt(enc);
+
             logger.LogDebug(PerfJob.GetProcessInfo());
 
             try

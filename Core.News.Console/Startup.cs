@@ -28,6 +28,7 @@ using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationM
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using System;
 using System.IO;
+using Core.News.Cryptography;
 
 namespace Core.News
 {
@@ -66,7 +67,6 @@ namespace Core.News
         /// <param name="services">The services.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddDataProtection()
                 .UseCryptographicAlgorithms(
                     new AuthenticatedEncryptorConfiguration()
@@ -82,10 +82,11 @@ namespace Core.News
             
             services.AddSingleton<INewsRepository, NewsRepository>();
             services.AddSingleton<IEmailRepository, EmailRepository>();
-
             services.AddSingleton<IWebClientService, WebClientService>();
             services.AddSingleton<IEmailConfiguration, EmailConfiguration>();
-            services.AddSingleton<IEmailSchedulingService, EmailSchedulingService>();            
+            services.AddSingleton<IEmailSchedulingService, EmailSchedulingService>();
+            services.AddSingleton<ICipherService, CipherService>();
+            services.AddSingleton<ICipherKeyProvider, EmailKeyProvider>();
 
             services.UseQuartz(typeof(EmailJob), typeof(PerfJob));
 

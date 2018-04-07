@@ -91,6 +91,20 @@ namespace Core.News.Mail
             };
             return config;
         }
+        /// <summary>
+        /// Gets the users.
+        /// </summary>
+        /// <returns>UserConfiguration.</returns>
+        public UserConfiguration GetUsers()
+        {
+            UserConfiguration config = new UserConfiguration
+            {
+                To = Users.To,
+                Cc = Users.Cc.ToList(),
+                Bcc = Users.Bcc.ToList()
+            };
+            return config;
+        }
 
         /// <summary>
         /// Clones the specified schedule.
