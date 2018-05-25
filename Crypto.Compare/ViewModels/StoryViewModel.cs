@@ -70,7 +70,7 @@ namespace Crypto.Compare.ViewModels
             html += "<br></br> <br></br>";
             html += $"<a href =\"{Url}\"><font color=\"green\"><b>{Title}</b></font></a>";
             html += "<br></br> <br></br>";
-            html += $"{body}";
+            html += $"{Body}";
             if (!Body.Contains("> Read More"))
             html += $"<a href =\"{Url}\">Read More</a>";
             html += "<br></br> <br></br>";
