@@ -27,26 +27,24 @@ namespace Core.News.Mail
         /// Gets or sets to.
         /// </summary>
         /// <value>To.</value>
-        public List<EmailAddress> To { get; set; }
+        public List<EmailAddress> To { get; set; } = new List<EmailAddress>();
         /// <summary>
         /// Gets or sets the cc.
         /// </summary>
         /// <value>The cc.</value>
-        public List<EmailAddress> Cc { get; set; }
+        public List<EmailAddress> Cc { get; set; } = new List<EmailAddress>();
         /// <summary>
         /// Gets or sets the BCC.
         /// </summary>
         /// <value>The BCC.</value>
-        public List<EmailAddress> Bcc { get; set; }
+        public List<EmailAddress> Bcc { get; set; } = new List<EmailAddress>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserConfiguration" /> class.
         /// </summary>
         public UserConfiguration()
-        {           
-            To = new List<EmailAddress>();            
-            Cc = new List<EmailAddress>();
-            Bcc = new List<EmailAddress>();
+        {          
+          
         }
         /// <summary>
         /// Alls this instance.
