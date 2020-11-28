@@ -125,10 +125,9 @@ namespace Core.News.Console.Scheduling
 
                     using (SmtpClient client = Map.SmtpClient(config.Smtp))
                     {
-                        client.EnableSsl = true;
                         logger.LogInformation("Emailing {0} stories {1}", stories.Count, userList);                        
                         client.Send(mail);                      
-                        logger.LogInformation("Done!");
+                        logger.LogInformation("Email Sent!");
 
                         users.ForEach(user => user.LastSent = DateTime.UtcNow);
                         emailRepository.SaveChanges();
