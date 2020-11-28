@@ -21,6 +21,7 @@ namespace Core.News.Cryptography
     /// <seealso cref="Core.News.Cryptography.ICipherKeyProvider" />
     public class EmailKeyProvider : ICipherKeyProvider
     {
+        const string file = @".\keys\email.key";
         /// <summary>
         /// The key
         /// </summary>
@@ -37,7 +38,10 @@ namespace Core.News.Cryptography
         /// <returns>System.String.</returns>
         private string getKey()
         {
-            key = File.ReadAllText(@".\keys\email.key");
+            if (!File.Exists(file))
+                return string.Empty;
+
+            key = File.ReadAllText(file);
             return key;
         }
     }

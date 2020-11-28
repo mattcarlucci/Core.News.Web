@@ -36,18 +36,17 @@ namespace Core.News.Mail
         /// TODO: Move to database with a UI Editor
         /// </summary>
         static FileStream dbLock = new FileStream(ConfigFile, FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
-
-
+                
         /// <summary>
         /// The synchronize lock
         /// </summary>
-        private static readonly object syncLock = new object();
+        private static object syncLock = new object();
 
         /// <summary>
         /// Loads this instance.
         /// </summary>
         /// <returns>EmailConfiguration.</returns>
-        public static EmailConfiguration Load(ILoggerFactory loggerFactory)
+        public static EmailConfiguration Load(ILogger logger)
         {
             EmailConfiguration emailConfiguration = null;
             try
@@ -56,7 +55,7 @@ namespace Core.News.Mail
                 {
                     if (File.Exists(ConfigFile) == false)
                     {
-                        throw new FileNotFoundException(ConfigFile);
+                        throw new FileNotFoundException("File not found", ConfigFile);
                     }
                     var path = Path.GetDirectoryName(Assembly.GetAssembly(typeof(EmailConfiguration)).Location);
                     var json = ReadFile(); 
@@ -65,8 +64,10 @@ namespace Core.News.Mail
             }catch(Exception ex)
             {
                 System.Console.Beep();
-                loggerFactory.CreateLogger<EmailConfiguration>().
-                    LogError(ex.Message, "Email services will be disabled");              
+                logger.LogError(ex.Message, "Email services will be disabled");
+
+                //loggerFactory.CreateLogger<EmailConfiguration>().
+                //    LogError(ex.Message, "Email services will be disabled");              
             }          
             return emailConfiguration;
         }

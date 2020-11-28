@@ -59,8 +59,26 @@ namespace Core.News
 
             Configuration = builder.Build();
             config = NewsConfiguration.Load();
+            AddLogging();
         }
 
+        /// <summary>
+        /// Add logging.
+        /// </summary>
+        private static void AddLogging()
+        {
+            //Log.Logger = new LoggerConfiguration()
+            //    .WriteTo.Trace()
+            //    .WriteTo.RollingFile("Logs/trace.log", Serilog.Events.LogEventLevel.Debug).CreateLogger();
+
+           // Log.Logger = new LoggerConfiguration()
+           //     .WriteTo.Trace()
+           //     .WriteTo.ColoredConsole(Serilog.Events.LogEventLevel.Verbose)           
+           //     .WriteTo.RollingFile("Logs/Core.News.Console-{Date}.log", Serilog.Events.LogEventLevel.Verbose)
+           //.CreateLogger();
+
+           // Log.Logger.Information("Logging initialized...");
+        }
         /// <summary>
         /// Configures the services.
         /// </summary>
@@ -87,7 +105,7 @@ namespace Core.News
             services.AddSingleton<IEmailSchedulingService, EmailSchedulingService>();
             services.AddSingleton<ICipherService, CipherService>();
             services.AddSingleton<ICipherKeyProvider, EmailKeyProvider>();
-
+            
             services.UseQuartz(typeof(EmailJob), typeof(PerfJob));
 
             services.AddEntityFrameworkSqlServer();

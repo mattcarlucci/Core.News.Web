@@ -1,9 +1,11 @@
 ﻿
 using Core.News.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,6 +13,15 @@ using System.Text;
 
 namespace Core.News
 {
+    public class Urls
+    {
+        public string Provider { get; set; }
+        public string News { get; set; }
+        public string CoinList { get; set; }
+        public string SocialStats { get; set; }
+        public string CoinSnapshot { get; set; }
+        public string Historical { get; set; }
+    }
     public class Connection
     {
         public string Key { get; set; }
@@ -39,6 +50,12 @@ namespace Core.News
         /// </summary>
         /// <value>The connection.</value>
         public string Connection { get; set; }
+
+        /// <summary>
+        /// Gets or sets the crypto compare.
+        /// </summary>
+        /// <value>The crypto compare.</value>       
+        public Urls Urls { get; set; }
         /// <summary>
         /// Gets or sets the interval.
         /// </summary>
@@ -75,8 +92,11 @@ namespace Core.News
         /// <returns></returns>       
         public static NewsConfiguration Load()
         {
+            Debug.Print(AppDomain.CurrentDomain.BaseDirectory);
+            Debug.Print(Assembly.GetEntryAssembly().Location);
+
             // if (File.Exists(configFile) == false) return null;
-            var path = Path.GetDirectoryName(Assembly.GetAssembly(typeof(NewsConfiguration)).Location);
+            var path = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
             var json = File.ReadAllText(path + "\\" + configFile);
             var config = JsonConvert.DeserializeObject<NewsConfiguration>(json);
             config.GetDefaultConnection();

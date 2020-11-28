@@ -1,4 +1,5 @@
-﻿using Crypto.Compare.Models;
+﻿using Core.News;
+using Crypto.Compare.Models;
 using Crypto.Compare.Models.CoinInfo;
 using Crypto.Compare.Models.Historical;
 using Crypto.Compare.Models.SocialStats;
@@ -20,10 +21,11 @@ namespace Crypto.Compare.Repositories
     /// </summary>
     public class CryptoRepository
     {
-        //TODO: Add to DI and wire up necessary classes
+        NewsConfiguration config = null;
+              
         public CryptoRepository()
         {
-
+            config = NewsConfiguration.Load();
         }
 
         /// <summary>
@@ -46,7 +48,7 @@ namespace Crypto.Compare.Repositories
         {
             ConcurrentBag<CryptoCoin> coins = new ConcurrentBag<CryptoCoin>();
 
-            string url = "https://www.cryptocompare.com/api/data/coinlist/";
+            string url = config.Urls.CoinList;
             var data = GetDataToken(url);
             Parallel.ForEach(data, item =>
             {
@@ -86,7 +88,7 @@ namespace Crypto.Compare.Repositories
             ConcurrentBag<SocialStats> bag = new ConcurrentBag<SocialStats>();
             Parallel.ForEach(coins, coin =>         
             {
-                var url = "https://www.cryptocompare.com/api/data/socialstats/?id=" + coin.Id;
+                var url = string.Format(config.Urls.SocialStats, coin.Id);
                 var stat = Transform<SocialStats>(url);
                 bag.Add(stat);                
             });
@@ -104,7 +106,7 @@ namespace Crypto.Compare.Repositories
             ConcurrentBag<CoinSnapshot> bag = new ConcurrentBag<CoinSnapshot>();
             Parallel.ForEach(coins, coin =>
             {
-                string url = string.Format("https://min-api.cryptocompare.com/data/top/exchanges/full?fsym={0}&tsym=USD", coin.Symbol);                
+                string url = string.Format(config.Urls.CoinSnapshot, coin.Symbol);                
                 var stat = Transform<CoinSnapshot>(url);
                 if (stat != null) bag.Add(stat); else bad.Add(coin.Symbol);
                 
@@ -125,10 +127,12 @@ namespace Crypto.Compare.Repositories
 
             Parallel.ForEach(coins, options, coin =>
             {
-                string url = string.Format("https://min-api.cryptocompare.com/data/{0}?fsym={1}&tsym=USD&limit={2}", 
+                string url = string.Format(config.Urls.Historical, 
                     type, coin.Symbol, barCount);
+
                 var stat = Transform<T>(url);
-                if (stat != null && stat.Bars.Sum(s => s.High) > 0)
+
+                if (stat != null && stat?.Bars?.Sum(s => s?.High) > 0)
                 {
                     stat.Symbol = coin;
                     stat.Bars.Where(w => w.Open + w.High + w.Low == 0).

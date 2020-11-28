@@ -94,7 +94,8 @@ namespace Core.News.Console.Scheduling
         private async Task Execute()
         {
             try
-            {
+            {               
+                
                 lock (syncLock)
                 {
                     DateTime offset = DateTime.UtcNow.AddYears(-1);
@@ -103,7 +104,7 @@ namespace Core.News.Console.Scheduling
                     var group = context.JobDetail.Key.Group;
                     var users = emailRepository.GetScheduleById(group);
 
-                    if (users.Count > 0)
+                    if (users == null || users.Count > 0)
                         offset = users.Last().LastSent;
 
                     var stories = newsRepository.GetStoriesByDate(offset.AddDays(0)).ToList();
@@ -121,7 +122,8 @@ namespace Core.News.Console.Scheduling
 
                     using (SmtpClient client = Map.SmtpClient(config.Smtp))
                     {
-                        logger.LogInformation("Emailing {0} stories {1}", stories.Count, userList);                       
+                        client.EnableSsl = true;
+                        logger.LogInformation("Emailing {0} stories {1}", stories.Count, userList);                        
                         client.Send(mail);                      
                         logger.LogInformation("Done!");
 

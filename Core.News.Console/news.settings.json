@@ -1,7 +1,16 @@
 {
-  "Interval": 0.5,  "_Interval is in Minutes": "",
-  "SaveStories": true,  
-  "Connection": "SqlExpress",
+  "Urls": {
+    "Provider": "https://min-api.cryptocompare.com/data/news/providers",
+    "News": "https://min-api.cryptocompare.com/data/news/?lang=EN",
+    "CoinList": "https://www.cryptocompare.com/api/data/coinlist/",
+    "SocialStats": "https://www.cryptocompare.com/api/data/socialstats/?id={0}",
+    "CoinSnapshot": "https://min-api.cryptocompare.com/data/top/exchanges/full?fsym={0}&tsym=USD",
+    "Historical": "https://min-api.cryptocompare.com/data/{0}?fsym={1}&tsym=USD&limit={2}"
+  },
+  "Interval": 0.5,
+  "_Interval is in Minutes": "",
+  "SaveStories": true,
+  "Connection": "SqlServer",
   "Connections": [
     {
       "Key": "SqlExpress",
@@ -11,6 +20,11 @@
     {
       "Key": "SqlServer",
       "Value": "Server=localhost;Database=News;Trusted_Connection=True;ConnectRetryCount=0",
+      "Store": "News.Core.SqlServer.Models.NewsDbContext"
+    },
+    {
+      "Key": "Debug",
+      "Value": "Server=MJCW19;Database=News;Trusted_Connection=True;ConnectRetryCount=0",
       "Store": "News.Core.SqlServer.Models.NewsDbContext"
     },
     {

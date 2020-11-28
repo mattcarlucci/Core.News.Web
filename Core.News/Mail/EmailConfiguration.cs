@@ -128,7 +128,8 @@ namespace Core.News.Mail
         /// <returns>EmailConfiguration.</returns>
         public EmailConfiguration Load()
         {
-            return EmailConfigContext.Load(loggerFactory);
+            var logger2 = loggerFactory.CreateLogger<EmailConfigContext>();
+            return EmailConfigContext.Load(logger2);
         }     
     }
 }

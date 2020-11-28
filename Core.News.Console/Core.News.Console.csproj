@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>77293028-20b0-4774-93e3-571d522e7b5a</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,19 +27,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="6.2.2" />
-    <PackageReference Include="fm.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="2.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="2.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
-    <PackageReference Include="NetEscapades.Extensions.Logging.RollingFile" Version="1.0.0" />
-    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.1" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="fm.Extensions.Configuration.Json" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +53,12 @@
 
   <ItemGroup>
     <None Update="Cron Schedule Helper.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="email.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="keys\email.key">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="news.settings.json">

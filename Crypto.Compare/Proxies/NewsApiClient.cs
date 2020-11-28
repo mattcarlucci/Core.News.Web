@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Crypto.Compare.Models;
 using System.Diagnostics;
+using Core.News;
 
 namespace Crypto.Compare.Proxies
 {
@@ -30,6 +31,7 @@ namespace Crypto.Compare.Proxies
     /// <seealso cref="Crypto.News.NewsApiEvents" />
     public class NewsApiClient : NewsApiEvents, INewsApiClient, INewsApiEvents
     {
+        NewsConfiguration config = null;
         /// <summary>
         /// The watch
         /// </summary>
@@ -46,33 +48,30 @@ namespace Crypto.Compare.Proxies
         /// <value>The story count.</value>
         public int StoryCount { get; set; }
 
-        /// <summary>
-        /// The provider URL
-        /// </summary>
-        const string providerUrl = "https://min-api.cryptocompare.com/data/news/providers";
-        /// <summary>
-        /// The news URL
-        /// </summary>
-        const string newsUrl = "https://min-api.cryptocompare.com/data/news/?lang=EN";
-
 
         /// <summary>
         /// Gets or sets the start date.
         /// </summary>
         /// <value>The start date.</value>
         protected int StartDate { get; set; }
-       
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="NewsApiClient"/> class.
+        /// Initializes a new instance of the<see cref="NewsApiClient" /> class.
         /// </summary>
-        /// <param name="config">The configuration.</param>
-        public NewsApiClient() { }
+        public NewsApiClient() { config = NewsConfiguration.Load(); }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NewsApiClient" /> class.
         /// </summary>
         /// <param name="skipDetails">if set to <c>true</c> [skip details].</param>
-        public NewsApiClient(bool skipDetails) : this(skipDetails, DateTime.Now) { }
+        public NewsApiClient(bool skipDetails) : 
+            this(skipDetails, DateTime.Now) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NewsApiClient"/> class.
+        /// </summary>
+        /// <param name="startDate">The start date.</param>
+        public NewsApiClient(DateTime startDate) : this(false, startDate) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NewsApiClient"/> class.
@@ -81,16 +80,13 @@ namespace Crypto.Compare.Proxies
         /// <param name="startDate">The start date.</param>
         public NewsApiClient(bool skipDetails, DateTime startDate) 
         {
+            config = NewsConfiguration.Load();
             this.skipDetails = skipDetails;
             StartDate = startDate.
                 ToUniversalTime().ToUnixTime();
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NewsApiClient"/> class.
-        /// </summary>
-        /// <param name="startDate">The start date.</param>
-        public NewsApiClient(DateTime startDate) : this(false, startDate) { }
+      
 
         /// <summary>
         /// Gets the latest news.
@@ -123,7 +119,7 @@ namespace Crypto.Compare.Proxies
         {
             try
             {
-                var json = web.DownloadString(providerUrl);
+                var json = web.DownloadString(config.Urls.Provider);
                 return JsonConvert.DeserializeObject<List<Models.Provider>>(json);
             }
             catch(WebException ex)
@@ -141,7 +137,7 @@ namespace Crypto.Compare.Proxies
         {
             try
             {
-                var json = web.DownloadString(newsUrl);
+                var json = web.DownloadString(config.Urls.News);
                 return JsonConvert.DeserializeObject<List<Publication>>(json);
             }
             catch (Exception ex)
@@ -218,7 +214,7 @@ namespace Crypto.Compare.Proxies
             {               
                 story.Title = story.Title.Ascii();
                 story.Body = story.Body.Ascii();// + string.Format(anchor, story.Url);
-                story.Provider = providers.SingleOrDefault(s => s.Name == story.Source.Name);                
+                story.Provider = providers.FirstOrDefault(s => s.Name == story.Source.Name);                
             });
         }      
     }

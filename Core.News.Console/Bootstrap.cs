@@ -25,9 +25,11 @@ using System.Net.Mail;
 using Core.News.Mail;
 using System.Net;
 using System.Linq;
-using Serilog;
+
 using Core.News.Console.Scheduling;
 using Core.News.Cryptography;
+using System.IO;
+using Serilog;
 //using Microsoft.AspNetCore.DataProtection;
 
 namespace Core.News
@@ -37,36 +39,41 @@ namespace Core.News
     /// </summary>
     public static class Bootstrap
     {
+        public static IMapper Mapper => AutoMapperConfig.Instance;
         /// <summary>
         /// Initializes this instance.
         /// </summary>
         public static void InitializeAsync()
-        {            
-            IServiceCollection services = new ServiceCollection();         
+        {
+            IServiceCollection services = new ServiceCollection();
 
             Startup startup = new Startup();
-            startup.ConfigureServices(services);                       
+            startup.ConfigureServices(services);
 
-            IServiceProvider serviceProvider = services.BuildServiceProvider();
-            //IDataProtectionProvider protectionProvider = serviceProvider.GetService<IDataProtectionProvider>();
 
-            var loggerFactory = serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Trace);
-            loggerFactory.AddFile("Logs/Core.News.Console-{Date}.log");
+            services.AddLogging(config =>
+            {               
+                config.AddConsole().SetMinimumLevel(LogLevel.Information);
+                config.AddFile("Logs/Core.News.Console-{Date}.log").SetMinimumLevel(LogLevel.Information);
+            });
 
-            Log.Logger = new LoggerConfiguration()      
-            .WriteTo.RollingFile("Logs/trace.log", Serilog.Events.LogEventLevel.Verbose).CreateLogger();
-          
+            //TODO: Start using Serilog
+            Log.Logger = new LoggerConfiguration()
+           .WriteTo.RollingFile("Logs/trace.log", Serilog.Events.LogEventLevel.Verbose).CreateLogger();
+
             AutoMapperConfig.RegisterMappings();
-            StartServices(serviceProvider);         
+            
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
+            StartServices(serviceProvider);
         }
-
+              
         /// <summary>
         /// Starts the services.
         /// </summary>
         /// <param name="serviceProvider">The service provider.</param>
         private static void StartServices(IServiceProvider serviceProvider)
         {
-            var logger = serviceProvider.GetService<ILogger<Program>>();
+            var logger =  serviceProvider.GetService<ILogger<Program>>();
             var svc = serviceProvider.GetService<IEmailSchedulingService>();
 
             var protector = serviceProvider.GetService<ICipherService>();
@@ -82,95 +89,99 @@ namespace Core.News
 
                 svc.CreateJobs();
 
-                task.Wait();               
+                task.Wait();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-               svc.Shutdown();
-               logger.LogCritical(ex, ex.Message);
-               logger.LogDebug(PerfJob.GetProcessInfo());
-               System.Threading.Thread.Sleep(-1);
+                svc.Shutdown();
+                logger.LogCritical(ex, ex.Message);
+                logger.LogDebug(PerfJob.GetProcessInfo());
+                System.Threading.Thread.Sleep(-1);
             }
         }
     }
-
 
     /// <summary>
     /// Class AutoMapperConfig.
     /// </summary>
     public static class AutoMapperConfig
     {
+        static IMapper mapper;
+
+        public static IMapper Instance => mapper;
         /// <summary>
         /// Registers the mappings.
         /// </summary>
         public static void RegisterMappings()
-        {           
-            Mapper.Initialize(cfg => {
-                cfg.CreateMap<Publication, ItemContent>().
-                ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(src => src.publishedOn.FromUnixTime())).
-                ForMember(dst => dst.Content, opt => opt.MapFrom(src => src.Body)).
-                ForMember(dst => dst.SourceUrl, opt => opt.MapFrom(src =>  src.Url)).
-                ForMember(dst => dst.CreatedBy, opt => opt.MapFrom(src => src.Source.Name)).
-                ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title)).
-                ForMember(dst => dst.ModifiedDate, opt => opt.MapFrom(src => src.publishedOn.FromUnixTime())).
-                ForMember(dst => dst.SortDescription, opt => opt.MapFrom(src => src.Body)).
-                ForMember(dst => dst.SmallImage, opt => opt.MapFrom(src => src.ImageUrl)).
-                ForMember(dst => dst.MediumImage, opt => opt.MapFrom(src => src.ImageUrl)).
-                ForMember(dst => dst.BigImage, opt => opt.MapFrom(src => src.ImageUrl)).
-                ForMember(dst => dst.NumOfView, opt => opt.MapFrom(src => 1)).
-                ForMember(dst => dst.RawData, opt => opt.MapFrom(src => src.UrlData)).
-                ForMember(dst => dst.Id, opt => opt.Ignore());
+        {
+            var config = new MapperConfiguration(
+            cfg =>
+               {
+                   cfg.CreateMap<Publication, ItemContent>().
+                   ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(src => src.publishedOn.FromUnixTime())).
+                   ForMember(dst => dst.Content, opt => opt.MapFrom(src => src.Body)).
+                   ForMember(dst => dst.SourceUrl, opt => opt.MapFrom(src => src.Url)).
+                   ForMember(dst => dst.CreatedBy, opt => opt.MapFrom(src => src.Source.Name)).
+                   ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title)).
+                   ForMember(dst => dst.ModifiedDate, opt => opt.MapFrom(src => src.publishedOn.FromUnixTime())).
+                   ForMember(dst => dst.SortDescription, opt => opt.MapFrom(src => src.Body)).
+                   ForMember(dst => dst.SmallImage, opt => opt.MapFrom(src => src.ImageUrl)).
+                   ForMember(dst => dst.MediumImage, opt => opt.MapFrom(src => src.ImageUrl)).
+                   ForMember(dst => dst.BigImage, opt => opt.MapFrom(src => src.ImageUrl)).
+                   ForMember(dst => dst.NumOfView, opt => opt.MapFrom(src => 1)).
+                   ForMember(dst => dst.RawData, opt => opt.MapFrom(src => src.UrlData)).
+                   ForMember(dst => dst.Id, opt => opt.Ignore());
 
-                cfg.CreateMap<Provider, Category>().
-                ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name)).
-                ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(src => DateTime.Now.ToUniversalTime())).
-                ForMember(dst => dst.CreatedBy, opt => opt.MapFrom(src => src.Name)).
-                ForMember(dst => dst.ModifiedDate, opt => opt.MapFrom(src => DateTime.Now.ToUniversalTime()));
+                   cfg.CreateMap<Provider, Category>().
+                   ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name)).
+                   ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(src => DateTime.Now.ToUniversalTime())).
+                   ForMember(dst => dst.CreatedBy, opt => opt.MapFrom(src => src.Name)).
+                   ForMember(dst => dst.ModifiedDate, opt => opt.MapFrom(src => DateTime.Now.ToUniversalTime()));
 
-                cfg.CreateMap<Item, Item>().
-                ForMember(dst => dst.CategoryId, opt => opt.MapFrom(src => src.Category.Id)).
-                ForMember(dst => dst.ItemContentId, opt => opt.MapFrom(src => src.ItemContent.Id)).
-                ForMember(dst => dst.CreatedBy, opt => opt.MapFrom(src => src.ItemContent.CreatedBy)).
-                ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(src => src.ItemContent.CreatedDate)).
-                ForMember(dst => dst.ModifiedDate, opt => opt.MapFrom(src => src.ItemContent.ModifiedDate));
+                   cfg.CreateMap<Item, Item>().
+                   ForMember(dst => dst.CategoryId, opt => opt.MapFrom(src => src.Category.Id)).
+                   ForMember(dst => dst.ItemContentId, opt => opt.MapFrom(src => src.ItemContent.Id)).
+                   ForMember(dst => dst.CreatedBy, opt => opt.MapFrom(src => src.ItemContent.CreatedBy)).
+                   ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(src => src.ItemContent.CreatedDate)).
+                   ForMember(dst => dst.ModifiedDate, opt => opt.MapFrom(src => src.ItemContent.ModifiedDate));
 
-                cfg.CreateMap<Publication, StoryViewModel>().
-                ForMember(dst => dst.ImageUrl, opt => opt.MapFrom(src => src.Source.ImageUrl)).
-                ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Source.Name)).
-                ForMember(dst => dst.Elapsed, opt => opt.MapFrom(src => src.GetElapsedTime())).
-                ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title)).
-                ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body)).
-                ForMember(dst => dst.Url, opt => opt.MapFrom(src => src.Url));
+                   cfg.CreateMap<Publication, StoryViewModel>().
+                   ForMember(dst => dst.ImageUrl, opt => opt.MapFrom(src => src.Source.ImageUrl)).
+                   ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Source.Name)).
+                   ForMember(dst => dst.Elapsed, opt => opt.MapFrom(src => src.GetElapsedTime())).
+                   ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title)).
+                   ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Body)).
+                   ForMember(dst => dst.Url, opt => opt.MapFrom(src => src.Url));
 
-                cfg.CreateMap<ItemContent, StoryViewModel>().
-                ForMember(dst => dst.ImageUrl, opt => opt.MapFrom(src => src.SmallImage)).
-                ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.CreatedBy)).
-                ForMember(dst => dst.Elapsed, opt => opt.MapFrom(src => src.GetElapsedTime())).
-                ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title)).
-                ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Content)).
-                ForMember(dst => dst.Url, opt => opt.MapFrom(src => src.SourceUrl));
+                   cfg.CreateMap<ItemContent, StoryViewModel>().
+                   ForMember(dst => dst.ImageUrl, opt => opt.MapFrom(src => src.SmallImage)).
+                   ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.CreatedBy)).
+                   ForMember(dst => dst.Elapsed, opt => opt.MapFrom(src => src.GetElapsedTime())).
+                   ForMember(dst => dst.Title, opt => opt.MapFrom(src => src.Title)).
+                   ForMember(dst => dst.Body, opt => opt.MapFrom(src => src.Content)).
+                   ForMember(dst => dst.Url, opt => opt.MapFrom(src => src.SourceUrl));
 
-                cfg.CreateMap<SmtpConfiguration, SmtpClient>().
-                ForMember(dst => dst.Host, opt => opt.MapFrom(src => src.Host)).
-                ForMember(dst => dst.Port, opt => opt.MapFrom(src => src.Port)).
-                ForMember(dst => dst.Credentials, opt => opt.MapFrom(src => src.Credentials)).
-                ForMember(dst => dst.EnableSsl, opt => opt.MapFrom(src => src.EnableSsl)).              
-                ForMember(dst => dst.UseDefaultCredentials, opt => opt.MapFrom(src => src.UseDefaultCredentials));
+                   cfg.CreateMap<SmtpConfiguration, SmtpClient>().
+                   ForMember(dst => dst.Host, opt => opt.MapFrom(src => src.Host)).
+                   ForMember(dst => dst.Port, opt => opt.MapFrom(src => src.Port)).
+                   ForMember(dst => dst.Credentials, opt => opt.MapFrom(src => src.Credentials)).
+                   ForMember(dst => dst.EnableSsl, opt => opt.MapFrom(src => src.EnableSsl)).
+                   ForMember(dst => dst.UseDefaultCredentials, opt => opt.MapFrom(src => src.UseDefaultCredentials));
 
-                cfg.CreateMap<EmailConfiguration, MailMessage>().
-                ForMember(dst => dst.From, opt => opt.MapFrom(src => src.From.MailAddress)).
-                  ForMember(dst => dst.IsBodyHtml, opt => opt.MapFrom(src => true)).
-                ForMember(dst => dst.SubjectEncoding, opt => opt.MapFrom(src => System.Text.Encoding.UTF8));
+                   cfg.CreateMap<EmailConfiguration, MailMessage>().
+                   ForMember(dst => dst.From, opt => opt.MapFrom(src => src.From.MailAddress)).
+                     ForMember(dst => dst.IsBodyHtml, opt => opt.MapFrom(src => true)).
+                   ForMember(dst => dst.SubjectEncoding, opt => opt.MapFrom(src => System.Text.Encoding.UTF8));
 
 
-                cfg.CreateMap<UserConfiguration, MailMessage>().              
-                ForMember(dst => dst.To, opt => opt.MapFrom(src => src.To.Where(w => w.Enabled))).
-                ForMember(dst => dst.CC, opt => opt.MapFrom(src => src.Cc.Where(w => w.Enabled))).
-                ForMember(dst => dst.Bcc, opt => opt.MapFrom(src => src.Bcc.Where(w => w.Enabled))).
-                ForMember(dst => dst.IsBodyHtml, opt => opt.MapFrom(src => true)).
-                ForMember(dst => dst.SubjectEncoding, opt => opt.MapFrom(src => System.Text.Encoding.UTF8));
-
-            });
+                   cfg.CreateMap<UserConfiguration, MailMessage>().
+                   ForMember(dst => dst.To, opt => opt.MapFrom(src => src.To.Where(w => w.Enabled))).
+                   ForMember(dst => dst.CC, opt => opt.MapFrom(src => src.Cc.Where(w => w.Enabled))).
+                   ForMember(dst => dst.Bcc, opt => opt.MapFrom(src => src.Bcc.Where(w => w.Enabled))).
+                   ForMember(dst => dst.IsBodyHtml, opt => opt.MapFrom(src => true)).
+                   ForMember(dst => dst.SubjectEncoding, opt => opt.MapFrom(src => System.Text.Encoding.UTF8));
+               });
+            mapper = new Mapper(config);
         }
     }
 
@@ -186,8 +197,7 @@ namespace Core.News
         /// <returns>SmtpClient.</returns>
         public static SmtpClient SmtpClient(SmtpConfiguration config)
         {
-            return  AutoMapper.Mapper.Map<SmtpClient>(config);
-            
+            return Bootstrap.Mapper.Map<SmtpClient>(config);
         }
         /// <summary>
         /// Maps the mail address.
@@ -196,7 +206,7 @@ namespace Core.News
         /// <returns>MailAddress.</returns>
         public static MailAddress MailAddress(EmailAddress address)
         {
-            return AutoMapper.Mapper.Map<MailAddress>(address);
+            return Bootstrap.Mapper.Map<MailAddress>(address);
         }
         /// <summary>
         /// Maps to address.
@@ -204,8 +214,8 @@ namespace Core.News
         /// <param name="addresses">The addresses.</param>
         /// <returns>MailAddressCollection.</returns>
         public static MailAddressCollection ToAddress(List<EmailAddress> addresses)
-        { 
-            return AutoMapper.Mapper.Map<MailAddressCollection>(addresses);
+        {
+            return Bootstrap.Mapper.Map<MailAddressCollection>(addresses);
         }
 
         /// <summary>
@@ -215,7 +225,7 @@ namespace Core.News
         /// <param name="cc">The cc.</param>
         /// <param name="bcc">The BCC.</param>
         /// <returns>System.ValueTuple.MailAddressCollection.MailAddressCollection.MailAddressCollection.</returns>
-        public static (MailAddressCollection To, MailAddressCollection Cc, MailAddressCollection Bcc) 
+        public static (MailAddressCollection To, MailAddressCollection Cc, MailAddressCollection Bcc)
             Addresses(MailMessage message, List<EmailAddress> to, List<EmailAddress> cc, List<EmailAddress> bcc)
         {
             // message.To = MapToAddress(to);
@@ -232,11 +242,11 @@ namespace Core.News
         /// <returns>MailMessage.</returns>
         public static MailMessage MailConfiguration(IEmailConfiguration config, Func<EmailAddress, bool> predicate)
         {
-            var mail = AutoMapper.Mapper.Map<MailMessage>(config);
+            var mail = Bootstrap.Mapper.Map<MailMessage>(config);
             mail.To.AddRange(config.Users.To.Where(predicate));
             mail.CC.AddRange(config.Users.Cc.Where(predicate));
             mail.Bcc.AddRange(config.Users.Bcc.Where(predicate));
-         
+
             return mail;
         }
         /// <summary>
@@ -248,7 +258,7 @@ namespace Core.News
         /// <returns>System.Net.Mail.MailMessage.</returns>
         public static MailMessage Recipients(UserConfiguration config, Func<EmailAddress, bool> predicate)
         {
-            var mail = AutoMapper.Mapper.Map<MailMessage>(config);
+            var mail = Bootstrap.Mapper.Map<MailMessage>(config);
             mail.To.AddRange(config.To.Where(predicate));
             mail.CC.AddRange(config.To.Where(predicate));
             mail.Bcc.AddRange(config.To.Where(predicate));
@@ -261,7 +271,7 @@ namespace Core.News
         /// <returns>StoryViewModel.</returns>
         public static StoryViewModel StoryView(Publication publication)
         {
-            return AutoMapper.Mapper.Map<StoryViewModel>(publication);
+            return Bootstrap.Mapper.Map<StoryViewModel>(publication);
         }
 
         /// <summary>
@@ -271,8 +281,7 @@ namespace Core.News
         /// <returns>List&lt;StoryViewModel&gt;.</returns>
         public static StoryViewModels StoryView(List<Publication> publications)
         {
-            IMapper mapper = AutoMapper.Mapper.Instance;
-            var stories = mapper.Map<List<StoryViewModel>>(publications);
+            var stories = Bootstrap.Mapper.Map<List<StoryViewModel>>(publications);
 
             StoryViewModels model = new StoryViewModels(stories);
             return model;
@@ -284,8 +293,7 @@ namespace Core.News
         /// <returns>StoryViewModels.</returns>
         public static StoryViewModels StoryView(List<ItemContent> publications)
         {
-            IMapper mapper = AutoMapper.Mapper.Instance;
-            var stories = mapper.Map<List<StoryViewModel>>(publications);
+            var stories = Bootstrap.Mapper.Map<List<StoryViewModel>>(publications);
 
             StoryViewModels model = new StoryViewModels(stories);
             return model;
@@ -297,8 +305,7 @@ namespace Core.News
         /// <returns>List&lt;ItemContent&gt;.</returns>
         public static List<ItemContent> Stories(List<Publication> stories)
         {
-            IMapper mapper = AutoMapper.Mapper.Instance;
-            return mapper.Map<List<ItemContent>>(stories);
+            return Bootstrap.Mapper.Map<List<ItemContent>>(stories);
         }
         /// <summary>
         /// Maps the story.
@@ -307,7 +314,7 @@ namespace Core.News
         /// <returns>ItemContent.</returns>
         public static ItemContent Story(Publication story)
         {
-            return AutoMapper.Mapper.Map<ItemContent>(story);
+            return Bootstrap.Mapper.Map<ItemContent>(story);
         }
 
         /// <summary>
@@ -316,7 +323,7 @@ namespace Core.News
         /// <param name="provider">The provider.</param>
         public static Category Provider(Provider provider)
         {
-            return AutoMapper.Mapper.Map<Category>(provider);
+            return Bootstrap.Mapper.Map<Category>(provider);
         }
 
         /// <summary>
@@ -326,8 +333,7 @@ namespace Core.News
         /// <returns>List&lt;Category&gt;.</returns>
         public static List<Category> Providers(List<Provider> providers)
         {
-            IMapper mapper = AutoMapper.Mapper.Instance;
-            return mapper.Map<List<Category>>(providers);
+            return Bootstrap.Mapper.Map<List<Category>>(providers);
         }
 
         /// <summary>
@@ -339,7 +345,7 @@ namespace Core.News
         public static Item Item(Category category, ItemContent content)
         {
             var item = new Item(category, content);
-            return AutoMapper.Mapper.Map<Item>(item).Reset();
+            return Bootstrap.Mapper.Map<Item>(item).Reset();
         }
     }
 }

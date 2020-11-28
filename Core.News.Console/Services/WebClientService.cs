@@ -162,11 +162,15 @@ namespace Core.News
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="T:System.UnhandledExceptionEventArgs" /> instance containing the event data.</param>
         protected override void OnException(object sender, UnhandledExceptionEventArgs e)
-        {
+        {           
             logger.LogError(e.ExceptionObject as Exception, "WebClientApi returned with an exception");
+            
+            if (GlobalExtensions.IsWindows())
+                System.Console.Beep(250, 200);
 
-          //  e = errorCounter++ == 10 ? e = new UnhandledExceptionEventArgs(e.ExceptionObject, true) : e;
+            //  e = errorCounter++ == 10 ? e = new UnhandledExceptionEventArgs(e.ExceptionObject, true) : e;
             base.OnException(sender, e);
+
         }
         /// <summary>
         /// Triggered when the application host is performing a graceful shutdown.

@@ -17,6 +17,7 @@ using Core.News.Entities;
 using Core.News.Mail;
 using Core.News.Repositories;
 using Crypto.Compare.ViewModels;
+using Microsoft.Extensions.Logging;
 using News.Core.SqlServer;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,8 @@ namespace Core.News.Services
         /// The news repository
         /// </summary>
         private readonly INewsRepository newsRepository;
+        private readonly ILogger<EmailRepository> logger;
+
         /// <summary>
         /// The email configuration
         /// </summary>
@@ -45,11 +48,11 @@ namespace Core.News.Services
         /// </summary>
         /// <param name="newsRepository">The news repository.</param>
         /// <param name="emailConfiguration">The email configuration.</param>
-        public EmailRepository(INewsRepository newsRepository, IEmailConfiguration emailConfiguration)
+        public EmailRepository(INewsRepository newsRepository, IEmailConfiguration emailConfiguration, ILogger<EmailRepository> logger)
         {
             this.emailConfiguration = emailConfiguration.Load();
             this.newsRepository = newsRepository;
-            
+            this.logger = logger;            
         }
         /// <summary>
         /// Gets the stories.

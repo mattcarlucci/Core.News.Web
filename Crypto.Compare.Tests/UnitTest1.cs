@@ -59,11 +59,11 @@ namespace Crypto.Compare.Tests
         /// Verifies the connection.
         /// </summary>
         [Fact]
-        public void VerifyConnection()
+        public void VerifyNewsStories()
         {
-            NewsApiClient client = new NewsApiClient(true, DateTime.Now.AddDays(1));
+            NewsApiClient client = new NewsApiClient(true, DateTime.Now.AddDays(-1));
             client.RequestLatestNews();
-            Assert.Equal(0, client.StoryCount);
+            Assert.NotEqual(0, client.StoryCount);
         }
         /// <summary>
         /// Verifies the social stats.
