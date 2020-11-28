@@ -10,7 +10,7 @@
   "Interval": 0.5,
   "_Interval is in Minutes": "",
   "SaveStories": true,
-  "Connection": "SqlServer",
+  "Connection": "Debug",
   "Connections": [
     {
       "Key": "SqlExpress",

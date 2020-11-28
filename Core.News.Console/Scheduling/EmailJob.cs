@@ -104,7 +104,10 @@ namespace Core.News.Console.Scheduling
                     var group = context.JobDetail.Key.Group;
                     var users = emailRepository.GetScheduleById(group);
 
-                    if (users == null || users.Count > 0)
+                    if (users == null)
+                        return; //no one to send this to
+
+                    if (users.Count > 0)
                         offset = users.Last().LastSent;
 
                     var stories = newsRepository.GetStoriesByDate(offset.AddDays(0)).ToList();
