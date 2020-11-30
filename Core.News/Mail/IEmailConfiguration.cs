@@ -32,6 +32,18 @@ namespace Core.News.Mail
         /// </summary>
         /// <value>The SMTP.</value>
         SmtpConfiguration Smtp { get; set; }
+
+        /// <summary>
+        /// Gets or sets the rest SMTP.
+        /// </summary>
+        /// <value>The rest SMTP.</value>
+        RestSmtpConfiguration RestSmtp { get; set; }
+
+        /// <summary>
+        /// Gets or sets the SMTP client.
+        /// </summary>
+        /// <value>The SMTP client.</value>
+        string SmtpClient { get; set; }
       
         /// <summary>
         /// Gets or sets the user configuration.

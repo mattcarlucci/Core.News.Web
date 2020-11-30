@@ -1,4 +1,9 @@
 {
+  "RestSmtp": {
+    "HostUrl": "enter the rest host url",
+    "Domain": "enter the domain name",
+    "ApiKey": "enter Api Key"
+  },
   "Smtp": {
     "Host": "enter your smtp host",
     "UserName": "enter user name",
@@ -7,6 +12,7 @@
     "UseDefaultCredentials": false,
     "EnableSsl": true
   },
+  "SmtpClient": "enter RestSmtp or Smtp",
   "Enabled": false,
   "Users": {
     "To": [

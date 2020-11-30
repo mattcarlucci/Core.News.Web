@@ -31,6 +31,17 @@ namespace Core.News.Mail
         /// </summary>
         /// <value>The SMTP.</value>
         public SmtpConfiguration Smtp { get; set; }
+
+        /// <summary>
+        /// Gets or sets the rest SMTP.
+        /// </summary>
+        /// <value>The rest SMTP.</value>
+        public RestSmtpConfiguration RestSmtp { get; set; }
+        /// <summary>
+        /// Gets or sets the SMTP client.
+        /// </summary>
+        /// <value>The SMTP client.</value>
+        public string SmtpClient { get; set; }
        
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="T:Core.News.Mail.IEmailConfiguration" /> is enabled.
@@ -56,6 +67,7 @@ namespace Core.News.Mail
         {
             Users = new UserConfiguration();
             Smtp = new SmtpConfiguration();
+            RestSmtp = new RestSmtpConfiguration();
             From = new EmailAddress();          
         }
 
@@ -114,9 +126,11 @@ namespace Core.News.Mail
         public EmailConfiguration Clone(string schedule)
         {
             EmailConfiguration config = new EmailConfiguration
-            {
+            { 
                 Smtp = this.Smtp,
+                RestSmtp = this.RestSmtp,
                 From = this.From,
+                SmtpClient = this.SmtpClient,
                 Users = GetUsers(w => w.Schedule == schedule)
             };
             return config;

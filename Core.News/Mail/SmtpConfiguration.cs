@@ -20,7 +20,7 @@ namespace Core.News.Mail
     /// <summary>
     /// Class HostConfiguration.
     /// </summary>
-    public class SmtpConfiguration
+    public class SmtpConfiguration : ISmtpConfiguration
     {
         /// <summary>
         /// Gets or sets the host.

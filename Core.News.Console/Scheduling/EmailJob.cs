@@ -123,16 +123,28 @@ namespace Core.News.Console.Scheduling
                     logger.LogInformation("Executing job {0} - Last Scan: {1} - Users: {2} - Stories: {3}",
                         CronExprs.GetDescription(context.JobDetail.Key.Name), offset, users.Count, stories.Count);
 
-                    using (SmtpClient client = Map.SmtpClient(config.Smtp))
-                    {
-                        logger.LogInformation("Emailing {0} stories {1}", stories.Count, userList);                        
-                        client.Send(mail);                      
-                        logger.LogInformation("Email Sent!");
+                    logger.LogInformation("Emailing {0} stories {1}", stories.Count, userList);
 
-                        users.ForEach(user => user.LastSent = DateTime.UtcNow);
-                        emailRepository.SaveChanges();
+                    if (config.SmtpClient == "RestSmtp")
+                    {
+                        var response = RestEmail.SendEmail(mail, config.RestSmtp);
+                        logger.LogInformation($"Rest Call ResponseCode: {response?.StatusCode}");
                     }
-                }              
+                    else
+                    {
+                        using (SmtpClient client = Map.SmtpClient(config.Smtp))
+                        {
+                            logger.LogInformation("Emailing {0} stories {1}", stories.Count, userList);
+                            client.Send(mail);
+                            logger.LogInformation("Email Sent!");
+                        }
+                    }
+                    logger.LogInformation("Email Sent!");
+
+                    users.ForEach(user => user.LastSent = DateTime.UtcNow);
+                    emailRepository.SaveChanges();
+
+                }
             }
             catch (Exception ex)
             {

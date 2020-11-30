@@ -57,7 +57,7 @@ namespace Core.News.Mail
                     {
                         throw new FileNotFoundException("File not found", ConfigFile);
                     }
-                    var path = Path.GetDirectoryName(Assembly.GetAssembly(typeof(EmailConfiguration)).Location);
+                    var path = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
                     var json = ReadFile(); 
                     emailConfiguration = JsonConvert.DeserializeObject<EmailConfiguration>(json);
                 }
