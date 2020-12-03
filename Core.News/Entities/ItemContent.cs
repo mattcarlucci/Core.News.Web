@@ -61,7 +61,7 @@ namespace Core.News.Entities
         /// </summary>
         /// <value>The small image.</value>
         [Required]
-        [StringLength(200)]
+        [StringLength(300)]
         public string SmallImage { get; set; }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Core.News.Entities
         /// </summary>
         /// <value>The medium image.</value>
         [Required]
-        [StringLength(200)]
+        [StringLength(300)]
         public string MediumImage { get; set; }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Core.News.Entities
         /// </summary>
         /// <value>The big image.</value>
         [Required]
-        [StringLength(200)]
+        [StringLength(300)]
         public string BigImage { get; set; }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Core.News.Entities
         /// Gets or sets the source URL.
         /// </summary>
         /// <value>The source URL.</value>
-        [StringLength(200)]
+        [StringLength(300)]
         public virtual string SourceUrl { get; set; }
 
         /// <summary>

@@ -19,6 +19,7 @@
     <Compile Remove="Scheduling\QuartzServicesUtilities.cs" />
     <Compile Remove="Services\EmailService.cs" />
     <Compile Remove="Services\HostedService.cs" />
+    <Compile Remove="Services\IWebClientService.cs" />
     <Compile Remove="Services\NewsEmailProvider.cs" />
     <Compile Remove="Services\NewsEmaiService.cs" />
     <Compile Remove="Services\QuoteService.cs" />
@@ -37,7 +38,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0" />

@@ -16,4 +16,9 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Core.News.Console\Core.News.Console.csproj" />
+    <ProjectReference Include="..\Core.News\Core.News.csproj" />
+  </ItemGroup>
+
 </Project>

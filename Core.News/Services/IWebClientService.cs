@@ -16,6 +16,10 @@ using System.Threading.Tasks;
 
 namespace Core.News.Services
 {
-   
+    public interface IWebClientService
+    {
+        Task StartAsync(CancellationToken cancellationToken);
+        Task StopAsync(CancellationToken cancellationToken);
+    }
 
 }
